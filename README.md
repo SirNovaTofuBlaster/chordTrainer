@@ -8,5 +8,6 @@ Guitar chords, scales and practice tools, with a left-handed and right-handed sw
 - Keys, progressions, circle of fifths and a capo helper
 - Chord change trainer with a metronome
 - Tuning reference tones
+- Four colour themes (light, blue, black, sand) plus one that matches your device
 
 The page is a single `index.html`. To change it, edit the files in `src/` and run `python3 build.py`.

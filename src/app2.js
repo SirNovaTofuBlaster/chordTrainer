@@ -239,4 +239,14 @@ document.querySelectorAll("[data-hand]").forEach(b => b.addEventListener("click"
 $("tune-sel").innerHTML = TUNINGS.map(t => `<option value="${t.id}">${t.name}</option>`).join("");
 $("tune-sel").addEventListener("change", renderTuning);
 initFinder(); initFretboard(); initKeys(); initTrainer(); initMine(); renderTuning(); renderReference();
+const SKINS = ["auto","light","blue","black","sand"];
+function setSkin(s) {
+  if (!SKINS.includes(s)) s = "auto";
+  document.documentElement.dataset.skin = s;
+  try { localStorage.setItem("ct-skin", s); } catch (e) {}
+  document.querySelectorAll("button[data-skin]").forEach(b => b.setAttribute("aria-pressed", b.dataset.skin === s));
+}
+document.querySelectorAll("button[data-skin]").forEach(b => b.addEventListener("click", () => setSkin(b.dataset.skin)));
+let savedSkin = "auto"; try { savedSkin = localStorage.getItem("ct-skin") || "auto"; } catch (e) {}
+setSkin(savedSkin);
 setHand(hand);

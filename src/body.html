@@ -1,3 +1,4 @@
+<script>try{var s=localStorage.getItem("ct-skin");if(s)document.documentElement.dataset.skin=s;}catch(e){}</script>
 <header class="bar">
   <div class="wrap">
     <div class="brand">chord<span>Trainer</span></div>
@@ -7,6 +8,13 @@
     <div class="hand" role="group" aria-label="Which hand do you play with">
       <button id="hand-left" type="button" data-hand="left">Left<span class="hh">-handed</span></button>
       <button id="hand-right" type="button" data-hand="right">Right<span class="hh">-handed</span></button>
+    </div>
+    <div class="skins" role="group" aria-label="Colour theme">
+      <button type="button" class="skin" id="skin-auto" data-skin="auto" aria-label="Theme: match my device" title="Match my device" style="background:linear-gradient(135deg,#EDF0F3 50%,#10151C 50%)"></button>
+      <button type="button" class="skin" id="skin-light" data-skin="light" aria-label="Theme: light" title="Light" style="background:#EDF0F3"></button>
+      <button type="button" class="skin" id="skin-blue" data-skin="blue" aria-label="Theme: blue" title="Blue" style="background:#10151C"></button>
+      <button type="button" class="skin" id="skin-black" data-skin="black" aria-label="Theme: black" title="Black" style="background:#000000"></button>
+      <button type="button" class="skin" id="skin-sand" data-skin="sand" aria-label="Theme: sand" title="Sand" style="background:#F3EBDD"></button>
     </div>
   </div>
 </header>

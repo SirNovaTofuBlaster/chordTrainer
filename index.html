@@ -331,10 +331,28 @@ button, .chip, select, .tbtn, .roots button { touch-action: manipulation; -webki
 header.bar .brand { white-space: nowrap; }
 @media (max-width: 520px) { .hh { display: none; } .hand button { padding-inline: 14px; } }
 
+/* ---- colour themes (chosen with the swatches in the header) ---- */
+:root[data-skin="light"] { --bg: #EDF0F3; --surface: #FFFFFF; --ink: #18202C; --muted: #5A6576; --line: #C9D0DA; --accent: #A85A1C; --accent-soft: #F3E3D4; --on-accent: #FFFFFF; --good: #2F7D4F; color-scheme: light; }
+:root[data-skin="blue"] { --bg: #10151C; --surface: #18202A; --ink: #E5EAF1; --muted: #93A0B2; --line: #2C3745; --accent: #E39552; --accent-soft: #3A2716; --on-accent: #1B1006; --good: #6CC593; color-scheme: dark; }
+:root[data-skin="black"] { --bg: #000000; --surface: #0E0E0E; --ink: #F2F2F2; --muted: #9B9B9B; --line: #2B2B2B; --accent: #F0A25E; --accent-soft: #2B1B0C; --on-accent: #1B1006; --good: #6CC593; color-scheme: dark; }
+:root[data-skin="sand"] { --bg: #F1E9DA; --surface: #FBF7EF; --ink: #2A2118; --muted: #6B5E4C; --line: #D8CBB5; --accent: #9C4513; --accent-soft: #EBD6BE; --on-accent: #FFFFFF; --good: #3B7A4E; color-scheme: light; }
+.skins { display: flex; gap: 6px; align-items: center; }
+.skin { width: 26px; height: 26px; border-radius: 50%; border: 2px solid var(--line); padding: 0; cursor: pointer; flex: none; }
+.skin[aria-pressed="true"] { outline: 2px solid var(--accent); outline-offset: 2px; border-color: var(--surface); }
+@media all {
+  header.bar .wrap { display: grid; grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "brand hand" "nav skins"; align-items: center; row-gap: 2px; padding-block: 8px 2px; }
+  header.bar .brand { grid-area: brand; font-size: 1.2rem; }
+  header.bar .hand { grid-area: hand; }
+  header.bar .skins { grid-area: skins; padding-right: 2px; }
+  header.bar nav.jump { grid-area: nav; display: flex; flex-wrap: nowrap; overflow-x: auto; width: auto; min-width: 0; order: 0; margin-inline: -6px; scrollbar-width: none; }
+}
+@media (pointer: coarse) { .skin { width: 30px; height: 30px; } .skins { gap: 8px; } }
+
 body { margin: 0; }
 </style>
 </head>
 <body>
+<script>try{var s=localStorage.getItem("ct-skin");if(s)document.documentElement.dataset.skin=s;}catch(e){}</script>
 <header class="bar">
   <div class="wrap">
     <div class="brand">chord<span>Trainer</span></div>
@@ -344,6 +362,13 @@ body { margin: 0; }
     <div class="hand" role="group" aria-label="Which hand do you play with">
       <button id="hand-left" type="button" data-hand="left">Left<span class="hh">-handed</span></button>
       <button id="hand-right" type="button" data-hand="right">Right<span class="hh">-handed</span></button>
+    </div>
+    <div class="skins" role="group" aria-label="Colour theme">
+      <button type="button" class="skin" id="skin-auto" data-skin="auto" aria-label="Theme: match my device" title="Match my device" style="background:linear-gradient(135deg,#EDF0F3 50%,#10151C 50%)"></button>
+      <button type="button" class="skin" id="skin-light" data-skin="light" aria-label="Theme: light" title="Light" style="background:#EDF0F3"></button>
+      <button type="button" class="skin" id="skin-blue" data-skin="blue" aria-label="Theme: blue" title="Blue" style="background:#10151C"></button>
+      <button type="button" class="skin" id="skin-black" data-skin="black" aria-label="Theme: black" title="Black" style="background:#000000"></button>
+      <button type="button" class="skin" id="skin-sand" data-skin="sand" aria-label="Theme: sand" title="Sand" style="background:#F3EBDD"></button>
     </div>
   </div>
 </header>
@@ -1123,6 +1148,16 @@ document.querySelectorAll("[data-hand]").forEach(b => b.addEventListener("click"
 $("tune-sel").innerHTML = TUNINGS.map(t => `<option value="${t.id}">${t.name}</option>`).join("");
 $("tune-sel").addEventListener("change", renderTuning);
 initFinder(); initFretboard(); initKeys(); initTrainer(); initMine(); renderTuning(); renderReference();
+const SKINS = ["auto","light","blue","black","sand"];
+function setSkin(s) {
+  if (!SKINS.includes(s)) s = "auto";
+  document.documentElement.dataset.skin = s;
+  try { localStorage.setItem("ct-skin", s); } catch (e) {}
+  document.querySelectorAll("button[data-skin]").forEach(b => b.setAttribute("aria-pressed", b.dataset.skin === s));
+}
+document.querySelectorAll("button[data-skin]").forEach(b => b.addEventListener("click", () => setSkin(b.dataset.skin)));
+let savedSkin = "auto"; try { savedSkin = localStorage.getItem("ct-skin") || "auto"; } catch (e) {}
+setSkin(savedSkin);
 setHand(hand);
 
 </script>
