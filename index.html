@@ -348,6 +348,23 @@ header.bar .brand { white-space: nowrap; }
 }
 @media (pointer: coarse) { .skin { width: 30px; height: 30px; } .skins { gap: 8px; } }
 
+/* theme picker: swatches on wide screens, a compact menu on phones and tablets */
+.skin-select { display: none; font: 700 .85rem var(--body); padding: 6px 10px; border: 1.5px solid var(--ink); border-radius: 999px; background: var(--surface); color: var(--ink); min-height: 36px; }
+@media (max-width: 900px) {
+  header.bar .wrap { grid-template-columns: minmax(0, 1fr) auto auto; grid-template-areas: "brand hand skinsel" "nav nav nav"; column-gap: 8px; }
+  header.bar .skins { display: none; }
+  header.bar .skin-select { display: block; grid-area: skinsel; }
+  header.bar nav.jump { -webkit-mask-image: linear-gradient(to right, #000 88%, transparent); mask-image: linear-gradient(to right, #000 88%, transparent); padding-right: 24px; }
+}
+@media (pointer: coarse) { .skin-select { min-height: 44px; } }
+@media (max-width: 360px) { header.bar .brand { font-size: 1.05rem; } .hand button { padding-inline: 10px; } }
+@media (max-width: 360px) {
+  header.bar .brand { font-size: .95rem; }
+  header.bar .wrap { column-gap: 6px; }
+  .hand button { padding-inline: 8px; font-size: .8rem; }
+  .skin-select { padding-inline: 8px; font-size: .8rem; }
+}
+
 body { margin: 0; }
 </style>
 </head>
@@ -370,6 +387,9 @@ body { margin: 0; }
       <button type="button" class="skin" id="skin-black" data-skin="black" aria-label="Theme: black" title="Black" style="background:#000000"></button>
       <button type="button" class="skin" id="skin-sand" data-skin="sand" aria-label="Theme: sand" title="Sand" style="background:#F3EBDD"></button>
     </div>
+    <select id="skin-select" class="skin-select" aria-label="Colour theme">
+      <option value="auto">Auto</option><option value="light">Light</option><option value="blue">Blue</option><option value="black">Black</option><option value="sand">Sand</option>
+    </select>
   </div>
 </header>
 
@@ -1154,7 +1174,9 @@ function setSkin(s) {
   document.documentElement.dataset.skin = s;
   try { localStorage.setItem("ct-skin", s); } catch (e) {}
   document.querySelectorAll("button[data-skin]").forEach(b => b.setAttribute("aria-pressed", b.dataset.skin === s));
+  $("skin-select").value = s;
 }
+$("skin-select").addEventListener("change", e => setSkin(e.target.value));
 document.querySelectorAll("button[data-skin]").forEach(b => b.addEventListener("click", () => setSkin(b.dataset.skin)));
 let savedSkin = "auto"; try { savedSkin = localStorage.getItem("ct-skin") || "auto"; } catch (e) {}
 setSkin(savedSkin);

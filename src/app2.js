@@ -245,7 +245,9 @@ function setSkin(s) {
   document.documentElement.dataset.skin = s;
   try { localStorage.setItem("ct-skin", s); } catch (e) {}
   document.querySelectorAll("button[data-skin]").forEach(b => b.setAttribute("aria-pressed", b.dataset.skin === s));
+  $("skin-select").value = s;
 }
+$("skin-select").addEventListener("change", e => setSkin(e.target.value));
 document.querySelectorAll("button[data-skin]").forEach(b => b.addEventListener("click", () => setSkin(b.dataset.skin)));
 let savedSkin = "auto"; try { savedSkin = localStorage.getItem("ct-skin") || "auto"; } catch (e) {}
 setSkin(savedSkin);
