@@ -1,0 +1,207 @@
+<header class="bar">
+  <div class="wrap">
+    <div class="brand">chord<span>Trainer</span></div>
+    <nav class="jump" aria-label="Sections">
+      <a href="#chords">Chords</a><a href="#mine">My chords</a><a href="#fretboard">Fretboard</a><a href="#keys">Keys</a><a href="#practice">Practice</a><a href="#tuning">Tuning</a><a href="#reference">Reference</a>
+    </nav>
+    <div class="hand" role="group" aria-label="Which hand do you play with">
+      <button id="hand-left" type="button" data-hand="left">Left<span class="hh">-handed</span></button>
+      <button id="hand-right" type="button" data-hand="right">Right<span class="hh">-handed</span></button>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+<main>
+  <section class="intro" aria-labelledby="intro-h">
+    <div>
+      <h1 id="intro-h">Chords, scales and practice for <em id="hand-word">left-handed</em> players.</h1>
+      <p>Press the button at the top and every diagram on the page flips to suit you. Chord charts are drawn as if the guitar is standing up in front of you. Fretboards run the same way your neck does.</p>
+    </div>
+    <div class="hero-chord" aria-live="polite">
+      <div id="hero-svg"></div>
+      <div class="cap">G major · <span id="hero-cap"></span></div>
+    </div>
+  </section>
+
+  <section id="chords" aria-labelledby="chords-h">
+    <h2 id="chords-h">Chord finder</h2>
+    <p class="lede">Pick a note and a chord type to see the shapes. Each chord has an open version where there is one, and barre versions you can slide up and down the neck.</p>
+    <div class="quick" role="group" aria-label="Beginner chords">
+      <span class="quick-label">Beginner chords</span>
+      <div id="quick"></div>
+    </div>
+    <div class="pick">
+      <div class="roots" id="roots" role="group" aria-label="Root note"></div>
+      <label for="ctype" class="inline">Type
+        <select id="ctype"></select>
+      </label>
+    </div>
+    <div class="panel result">
+      <div class="result-head">
+        <h3 id="res-name">G</h3>
+        <div class="res-sub"><span id="res-type"></span> · notes <b id="res-notes"></b></div>
+        <button class="btn small" id="add-mine" type="button">Add to my chords</button>
+      </div>
+      <div class="voicings" id="voicings"></div>
+      <p class="legend"><b>o</b> play the string open · <b>x</b> don't play it · numbers on the left are fret numbers · dots show fingers (1 index, 2 middle, 3 ring, 4 pinky)</p>
+    </div>
+    <h3 class="sub-h" id="all-h">Every chord on this note</h3>
+    <div class="grid" id="library"></div>
+  </section>
+
+  <section id="mine" aria-labelledby="mine-h">
+    <h2 id="mine-h">My chords</h2>
+    <p class="lede">Collect the chords you are learning and keep them all in one place. Your list is saved in this browser. Use the quiz modes to test yourself.</p>
+    <div class="panel mine-bar">
+      <div class="pair add-row"><span class="pair-label">Add a chord</span>
+        <select id="mine-root" aria-label="Note"></select><select id="mine-type" aria-label="Chord type"></select></div>
+      <button class="btn" id="mine-add" type="button">Add</button>
+      <label for="mine-mode">Quiz mode<select id="mine-mode">
+        <option value="all">Show everything</option>
+        <option value="name">Show the name, I guess the shape</option>
+        <option value="shape">Show the shape, I guess the name</option></select></label>
+      <button class="btn ghost" id="mine-shuffle" type="button">Shuffle</button>
+      <button class="btn ghost" id="mine-clear" type="button">Clear all</button>
+    </div>
+    <div class="quick" role="group" aria-label="Quick add">
+      <span class="quick-label">Quick add</span>
+      <div id="mine-quick"></div>
+      <span class="muted" id="mine-count"></span>
+    </div>
+    <div class="mine-grid" id="mine-grid"></div>
+    <p class="muted" id="mine-empty" hidden>Nothing here yet. Add a chord above, or use the "Add to my chords" button in the chord finder.</p>
+  </section>
+
+  <section id="fretboard" aria-labelledby="fb-h">
+    <h2 id="fb-h">Fretboard</h2>
+    <p class="lede">See any scale, chord or single note across the whole neck. The Egyptian and Middle Eastern scales are in the list under "Egyptian and Middle Eastern".</p>
+    <div class="panel fb-controls">
+      <label for="fb-mode">Show<select id="fb-mode">
+        <option value="scale">A scale</option><option value="chord">Chord notes</option>
+        <option value="note">One note</option><option value="all">Every note</option></select></label>
+      <label for="fb-root">Starting note<select id="fb-root"></select></label>
+      <label for="fb-scale" id="fb-scale-wrap">Scale<select id="fb-scale"></select></label>
+      <label for="fb-chord" id="fb-chord-wrap">Chord<select id="fb-chord"></select></label>
+      <label for="fb-tuning">Tuning<select id="fb-tuning"></select></label>
+      <label for="fb-label">Labels<select id="fb-label">
+        <option value="names">Note names</option><option value="degrees">Scale degrees</option><option value="none">None</option></select></label>
+      <label for="fb-frets">Frets<select id="fb-frets"><option>12</option><option selected>15</option><option>17</option><option>22</option></select></label>
+    </div>
+    <div class="panel fb-panel">
+      <p class="muted fb-hint">Swipe sideways to see the whole neck.</p>
+      <div class="fb-scroll"><div id="fb"></div></div>
+      <div class="fb-info">
+        <div class="notechips" id="fb-chips"></div>
+        <p id="fb-note" class="muted"></p>
+      </div>
+    </div>
+  </section>
+
+  <section id="keys" aria-labelledby="keys-h">
+    <h2 id="keys-h">Keys and progressions</h2>
+    <p class="lede">Chords that sound good together all come from the same key. Pick a key to see them, then try a common progression.</p>
+    <div class="panel keybar">
+      <label for="key-root">Key<select id="key-root"></select></label>
+      <div class="filters" role="group" aria-label="Major or minor">
+        <button class="chip" id="mode-major" type="button" data-mode="major" aria-pressed="true">Major</button>
+        <button class="chip" id="mode-minor" type="button" data-mode="minor" aria-pressed="false">Minor</button>
+      </div>
+      <label class="check" for="sevenths"><input type="checkbox" id="sevenths"> Show 7th chords</label>
+    </div>
+    <div class="keychords" id="keychords"></div>
+    <div class="two">
+      <div class="panel">
+        <h3 class="sub-h">Common progressions</h3>
+        <label for="prog" class="inline">In this key<select id="prog"></select></label>
+        <div class="prog-out" id="prog-out"></div>
+        <p class="muted" id="prog-note"></p>
+      </div>
+      <div class="panel">
+        <h3 class="sub-h">Circle of fifths</h3>
+        <div id="circle"></div>
+        <p class="muted" id="circle-note">Click a key. Outer ring is major, inner ring is the relative minor.</p>
+      </div>
+    </div>
+    <div class="panel capo">
+      <h3 class="sub-h">Capo</h3>
+      <p class="muted">A capo lets you play easy open shapes in a harder key. Pick the shape you are playing and see what key it sounds in.</p>
+      <label for="capo-shape" class="inline">Shapes from the key of<select id="capo-shape"></select></label>
+      <div class="capo-table" id="capo-table"></div>
+    </div>
+  </section>
+
+  <section id="practice" aria-labelledby="practice-h">
+    <h2 id="practice-h">Chord change trainer</h2>
+    <p class="lede">Pick two chords and a strumming pattern. The metronome clicks and lights up each strum, and the chord switches every bar or two. Go slowly at first. Clean changes matter more than speed.</p>
+    <div class="trainer">
+      <div class="panel controls">
+        <div class="pair"><span class="pair-label">First chord</span>
+          <select id="c1r" aria-label="First chord note"></select><select id="c1t" aria-label="First chord type"></select></div>
+        <div class="pair"><span class="pair-label">Second chord</span>
+          <select id="c2r" aria-label="Second chord note"></select><select id="c2t" aria-label="Second chord type"></select></div>
+        <label for="pattern">Strumming pattern
+          <select id="pattern"></select>
+        </label>
+        <label for="bars">Change chord every
+          <select id="bars"><option value="1">1 bar</option><option value="2" selected>2 bars</option><option value="4">4 bars</option></select>
+        </label>
+        <label for="tempo">Speed <span class="bpm"><span id="bpm-val">60</span> beats per minute</span>
+          <input type="range" id="tempo" min="40" max="140" step="5" value="60">
+        </label>
+        <button class="btn" id="go" type="button">Start metronome</button>
+      </div>
+      <div class="panel">
+        <div class="stage">
+          <div class="now"><span class="lbl">Play now</span><span class="name" id="now-name">G</span><div id="now-svg"></div></div>
+          <div class="next"><span class="lbl">Up next</span><span class="name" id="next-name">D</span><div id="next-svg"></div></div>
+        </div>
+        <div class="strum" id="strum" aria-hidden="true"></div>
+        <div class="count" id="count">Press start. You will hear clicks once you tap the button.</div>
+      </div>
+    </div>
+    <div class="panel minute">
+      <div>
+        <h3>One-minute changes</h3>
+        <p>Switch between the two chords for 60 seconds. Tap "Clean change" each time the new chord rings out properly. Your best score for each pair of chords is saved in this browser.</p>
+      </div>
+      <div class="scoreboard">
+        <div class="score"><b id="m-time">60</b><span>Seconds</span></div>
+        <div class="score"><b id="m-count">0</b><span>Changes</span></div>
+        <div class="score best"><b id="m-best">–</b><span>Best</span></div>
+        <button class="btn ghost" id="m-start" type="button">Start minute</button>
+        <button class="btn" id="m-tap" type="button" disabled>Clean change</button>
+      </div>
+    </div>
+    <h3 class="sub-h">Strumming patterns</h3>
+    <div class="patterns" id="patterns"></div>
+  </section>
+
+  <section id="tuning" aria-labelledby="tuning-h">
+    <h2 id="tuning-h">Tuning</h2>
+    <p class="lede">Tap a string to hear its note, then tune yours until it matches. Always start with the string a bit flat and tighten up to the note.</p>
+    <div class="panel tune">
+      <label for="tune-sel">Tuning<select id="tune-sel"></select></label>
+      <div class="tune-strings" id="tune-strings"></div>
+      <p class="muted" id="tune-note"></p>
+    </div>
+  </section>
+
+  <section id="reference" aria-labelledby="ref-h">
+    <h2 id="ref-h">Reference</h2>
+    <div class="two">
+      <div class="panel">
+        <h3 class="sub-h">Intervals</h3>
+        <p class="muted">The distance between two notes, counted in semitones (one fret = one semitone). Scale and chord names use these.</p>
+        <div class="table-scroll"><table class="tbl" id="intervals"></table></div>
+      </div>
+      <div class="panel">
+        <h3 class="sub-h">Note names on the neck</h3>
+        <p class="muted">Standard tuning, first 12 frets. Learn the low E and A rows and you can find any note.</p>
+        <div class="table-scroll"><table class="tbl" id="notegrid"></table></div>
+      </div>
+    </div>
+  </section>
+</main>
+<footer>Strings are listed thickest (E) to thinnest (e). Chord shapes are for standard tuning.</footer>
+</div>
