@@ -3,7 +3,7 @@
   <div class="wrap">
     <div class="brand">chord<span>Trainer</span></div>
     <nav class="jump" aria-label="Sections">
-      <a href="#chords">Chords</a><a href="#mine">My chords</a><a href="#fretboard">Fretboard</a><a href="#keys">Keys</a><a href="#practice">Practice</a><a href="#tuning">Tuning</a><a href="#reference">Reference</a>
+      <a href="#chords">Chords</a><a href="#mine">My chords</a><a href="#fretboard">Fretboard</a><a href="#keys">Keys</a><a href="#practice">Practice</a><a href="#songs">Songs</a><a href="#tuning">Tuning</a><a href="#reference">Reference</a>
     </nav>
     <div class="hand" role="group" aria-label="Which hand do you play with">
       <button id="hand-left" type="button" data-hand="left">Left<span class="hh">-handed</span></button>
@@ -186,6 +186,19 @@
     </div>
     <h3 class="sub-h">Strumming patterns</h3>
     <div class="patterns" id="patterns"></div>
+  </section>
+
+  <section id="songs" aria-labelledby="songs-h">
+    <h2 id="songs-h">Songs</h2>
+    <p class="lede">The chord name sits above the word where you change. All of these are old songs that anyone can play.</p>
+    <div class="song-tabs" role="group" aria-label="Choose a song" id="song-tabs"></div>
+    <div class="panel song">
+      <div>
+        <p class="meta" id="song-meta"></p>
+        <div class="lyrics" id="lyrics"></div>
+      </div>
+      <div class="used" id="used"></div>
+    </div>
   </section>
 
   <section id="tuning" aria-labelledby="tuning-h">

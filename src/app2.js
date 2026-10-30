@@ -191,6 +191,42 @@ function initMine() {
   renderMine();
 }
 
+// ---- Songs (all traditional or 19th century, so free to share) ----
+const SONGS = [
+  { id: "clementine", title: "Oh My Darling, Clementine", meta: "Three beats to the bar, so use the waltz strum. Chords: G and D.", chords: ["G","D"], lines: [
+    "label:Verse", "In a [G]cavern, in a canyon,", "Excavating for a [D]mine,", "Dwelt a [D]miner, forty-[G]niner,", "And his [D]daughter, Clemen[G]tine.",
+    "gap", "label:Chorus", "Oh my [G]darling, oh my darling,", "Oh my darling, Clemen[D]tine,", "You are [D]lost and gone for[G]ever,", "Dreadful [D]sorry, Clemen[G]tine." ] },
+  { id: "susanna", title: "Oh! Susanna", meta: "Four beats to the bar, one strum per beat. Chords: G, D and C.", chords: ["G","D","C"], lines: [
+    "label:Verse", "I [G]come from Alabama with my [D]banjo on my knee,", "I'm [G]going to Louisiana, my [D]true love for to [G]see.",
+    "It [G]rained all night the day I left, the [D]weather it was dry,", "The [G]sun so hot I froze to death, Su[D]sanna, don't you [G]cry.",
+    "gap", "label:Chorus", "Oh! [C]Susanna, oh [G]don't you cry for [D]me,", "For I [G]come from Alabama with my [D]banjo on my [G]knee." ] },
+  { id: "grace", title: "Amazing Grace", meta: "Slow, three beats to the bar. Chords: G, C and D.", chords: ["G","C","D"], lines: [
+    "label:Verse 1", "A[G]mazing grace, how [C]sweet the [G]sound,", "That [G]saved a wretch like [D]me;", "I [G]once was lost, but [C]now am [G]found,", "Was [G]blind but [D]now I [G]see.",
+    "gap", "label:Verse 2", "'Twas [G]grace that [C]taught my [G]heart to fear,", "And [G]grace my [D]fears re[G]lieved;", "How [G]precious [C]did that [G]grace appear,", "The [G]hour I [D]first be[G]lieved." ] },
+  { id: "saints", title: "When the Saints Go Marching In", meta: "Four beats to the bar and a steady, happy tempo. Chords: G, C and D.", chords: ["G","C","D"], lines: [
+    "Oh when the [G]saints go marching in,", "Oh when the saints go marching in,", "Oh Lord I want to be in that [C]number,", "When the [G]saints go [D]marching [G]in." ] },
+  { id: "jingle", title: "Jingle Bells", meta: "Four beats to the bar, bouncy. Chords: G, C and D.", chords: ["G","C","D"], lines: [
+    "label:Chorus", "Jingle [G]bells, jingle bells, jingle all the [C]way,", "Oh what [G]fun it is to ride in a one-horse open [D]sleigh, hey!",
+    "Jingle [G]bells, jingle bells, jingle all the [C]way,", "Oh what [G]fun it is to ride in a one-horse open [D]sleigh [G]." ] },
+  { id: "greensleeves", title: "Greensleeves", meta: "A slow, rocking six. Count 1 2 3, 4 5 6. Chords: Am, G and E.", chords: ["Am","G","E"], lines: [
+    "label:Verse", "A[Am]las my love, you [G]do me wrong,", "To [Am]cast me off dis[E]courteously;", "For I have [Am]loved you [G]well and long,", "De[E]lighting in your [Am]company." ] },
+];
+let songIdx = 0;
+const SUFFIX = { "": "maj", m: "min", "7": "7", maj7: "maj7", m7: "m7" };
+function chordFromName(n) { const m = n.match(/^([A-G][b#]?)(maj7|m7|m|7)?$/); return { root: m[1], type: SUFFIX[m[2] || ""] }; }
+function renderSong() {
+  const s = SONGS[songIdx];
+  $("song-tabs").innerHTML = SONGS.map((x, i) => `<button class="chip" id="song-${x.id}" type="button" data-song="${i}" aria-pressed="${i === songIdx}">${x.title}</button>`).join("");
+  $("song-tabs").querySelectorAll("button").forEach(b => b.addEventListener("click", () => { songIdx = +b.dataset.song; renderSong(); }));
+  $("song-meta").textContent = s.meta;
+  $("lyrics").innerHTML = s.lines.map(l => {
+    if (l === "gap") return `<div class="gap"></div>`;
+    if (l.startsWith("label:")) return `<div class="label">${l.slice(6)}</div>`;
+    return `<p class="line">` + esc(l).replace(/\[([^\]]+)\]/g, (_, c) => `<span class="ch"><b>${c}</b></span>`) + `</p>`;
+  }).join("");
+  $("used").innerHTML = s.chords.map(n => { const c = chordFromName(n); return `<div class="card"><h3>${n}</h3>${chordSVG(chordVoicings(c.root, c.type)[0], { names: false, label: n })}</div>`; }).join("");
+}
+
 // ---- Tuning ----
 const TUNE_NOTES = {
   std: "Thickest to thinnest: E A D G B E. A way to remember it: Every Amateur Does Get Better Eventually.",
@@ -233,7 +269,7 @@ function setHand(h) {
   $("hand-word").textContent = h === "left" ? "left-handed" : "right-handed";
   $("hero-cap").textContent = h === "left" ? "thickest string on the right" : "thickest string on the left";
   $("hero-svg").innerHTML = chordSVG(chordVoicings("G", "maj")[0], { label: "G major" }).replace('class="chord"', 'class="chord" style="max-width:190px"');
-  renderFinder(); renderFretboard(); renderKeys(); renderStage(); renderMine();
+  renderFinder(); renderFretboard(); renderKeys(); renderStage(); renderMine(); renderSong();
 }
 document.querySelectorAll("[data-hand]").forEach(b => b.addEventListener("click", () => setHand(b.dataset.hand)));
 $("tune-sel").innerHTML = TUNINGS.map(t => `<option value="${t.id}">${t.name}</option>`).join("");
