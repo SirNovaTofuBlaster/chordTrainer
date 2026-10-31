@@ -3,7 +3,7 @@
   <div class="wrap">
     <div class="brand">chord<span>Trainer</span></div>
     <nav class="jump" aria-label="Sections">
-      <a href="#chords">Chords</a><a href="#mine">My chords</a><a href="#fretboard">Fretboard</a><a href="#keys">Keys</a><a href="#practice">Practice</a><a href="#songs">Songs</a><a href="#tuning">Tuning</a><a href="#reference">Reference</a>
+      <a href="#chords">Chords</a><a href="#mine">My chords</a><a href="#exercises">Exercises</a><a href="#fretboard">Fretboard</a><a href="#keys">Keys</a><a href="#practice">Practice</a><a href="#songs">Songs</a><a href="#tuning">Tuning</a><a href="#reference">Reference</a>
     </nav>
     <div class="hand" role="group" aria-label="Which hand do you play with">
       <button id="hand-left" type="button" data-hand="left">Left<span class="hh">-handed</span></button>
@@ -82,6 +82,39 @@
     </div>
     <div class="mine-grid" id="mine-grid"></div>
     <p class="muted" id="mine-empty" hidden>Nothing here yet. Add a chord above, or use the "Add to my chords" button in the chord finder.</p>
+  </section>
+
+  <section id="exercises" aria-labelledby="ex-h">
+    <h2 id="ex-h">Daily exercises</h2>
+    <p class="lede">A routine of about 20 minutes, put together from beginner lessons by JustinGuitar, D'Addario, GoodGuitarist and others. Most of them recommend a little practice most days over a long session once in a while.</p>
+    <div class="two ex-top">
+      <div class="panel">
+        <div class="ex-head"><h3 class="sub-h" id="ex-today">Today's routine</h3><span class="streak" id="ex-streak"></span></div>
+        <div class="bar-track" role="progressbar" aria-labelledby="ex-today" aria-valuemin="0" aria-valuemax="100" id="ex-bar"><div class="bar-fill" id="ex-fill"></div></div>
+        <p class="muted" id="ex-summary"></p>
+        <ul class="ex-list" id="ex-list"></ul>
+        <div class="ex-actions">
+          <button class="btn ghost" id="ex-all" type="button">Tick everything</button>
+          <button class="btn ghost" id="ex-reset" type="button">Clear today</button>
+        </div>
+        <p class="muted ex-short"><b>Short on time?</b> Do Chord Perfect Practice, One-minute changes and Play a song. That is 13 minutes.</p>
+      </div>
+      <div class="ex-side">
+        <div class="panel">
+          <h3 class="sub-h">Today's pairs</h3>
+          <p class="muted">Use these for your one-minute changes. A new set comes up each day, so you cover every pair in turn.</p>
+          <div class="ex-pairs" id="ex-pairs"></div>
+        </div>
+        <div class="panel">
+          <h3 class="sub-h">When to move on</h3>
+          <ul class="ms" id="ex-miles"></ul>
+        </div>
+      </div>
+    </div>
+    <h3 class="sub-h">The exercises</h3>
+    <div class="exd-grid" id="ex-lib"></div>
+    <h3 class="sub-h">Where this comes from</h3>
+    <ul class="srcs" id="ex-src"></ul>
   </section>
 
   <section id="fretboard" aria-labelledby="fb-h">
