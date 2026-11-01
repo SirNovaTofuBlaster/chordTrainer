@@ -75,10 +75,36 @@
       <button class="btn ghost" id="mine-shuffle" type="button">Shuffle</button>
       <button class="btn ghost" id="mine-clear" type="button">Clear all</button>
     </div>
-    <div class="quick" role="group" aria-label="Quick add">
-      <span class="quick-label">Quick add</span>
-      <div id="mine-quick"></div>
-      <span class="muted" id="mine-count"></span>
+    <div class="mine-row">
+      <div class="quick" role="group" aria-label="Quick add">
+        <span class="quick-label">Quick add</span>
+        <div id="mine-quick"></div>
+        <span class="muted" id="mine-count"></span>
+      </div>
+      <div class="panel strum-box">
+        <div class="sb-head"><b>My strumming patterns</b><span class="muted" id="sb-hint" role="status"></span></div>
+        <div class="sb-saved" id="sb-saved"></div>
+        <div class="sb-edit">
+          <input id="sb-name" type="text" maxlength="40" placeholder="Name it, e.g. Riptide verse" aria-label="Pattern name" autocomplete="off">
+          <select id="sb-len" aria-label="Pattern length">
+            <option value="8">1 bar of 4 beats</option><option value="6">1 bar of 3 beats</option><option value="16">2 bars of 4 beats</option>
+          </select>
+        </div>
+        <div class="sb-slots" id="sb-slots"></div>
+        <div class="sb-fill">
+          <input id="sb-type" type="text" maxlength="60" placeholder="Or type it: D - D U - U D U" aria-label="Type a pattern with D, U and dashes" autocomplete="off">
+          <button type="button" class="mini" id="sb-fill">Fill boxes</button>
+        </div>
+        <div class="sb-actions">
+          <button type="button" class="btn small" id="sb-save">Save</button>
+          <button type="button" class="btn small ghost" id="sb-var">Save as variation</button>
+          <button type="button" class="btn small ghost" id="sb-use">Use in trainer</button>
+          <span class="sb-play"><button type="button" class="btn small ghost" id="sb-play">Play</button>
+            <select id="sb-bpm" aria-label="Speed"><option value="60">60 BPM</option><option value="80" selected>80 BPM</option><option value="100">100 BPM</option><option value="120">120 BPM</option></select></span>
+          <button type="button" class="mini" id="sb-clear">Clear</button>
+          <button type="button" class="mini" id="sb-del">Delete</button>
+        </div>
+      </div>
     </div>
     <div class="mine-grid" id="mine-grid"></div>
     <p class="muted" id="mine-empty" hidden>Nothing here yet. Add a chord above, or use the "Add to my chords" button in the chord finder.</p>

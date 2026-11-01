@@ -3,7 +3,7 @@ import pathlib
 root = pathlib.Path(__file__).parent
 s = root / "src"
 css = "html { color-scheme: light; }\n" + (s / "styles.css").read_text() + "\nbody { margin: 0; }\n"
-js = "\n".join((s / f).read_text().replace("if (typeof module", "if (false && typeof module") for f in ["theory.js", "app1.js", "app2.js", "app3.js"])
+js = "\n".join((s / f).read_text().replace("if (typeof module", "if (false && typeof module") for f in ["theory.js", "app1.js", "app2.js", "app3.js", "app4.js"])
 page = f'''<!doctype html>
 <html lang="en">
 <head>

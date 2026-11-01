@@ -393,3 +393,26 @@ header.bar .brand { white-space: nowrap; }
 @media (max-width: 520px) { .exd-grid { grid-template-columns: minmax(0, 1fr); } .ex-row .mini { min-width: 0; } }
 .exd-grid { display: block; column-width: 300px; column-gap: 10px; }
 .exd { break-inside: avoid; margin-bottom: 10px; }
+
+/* my strumming patterns */
+.mine-row { display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1.4fr); gap: 16px; align-items: start; margin-bottom: 16px; }
+.mine-row .quick { margin-bottom: 0; }
+.strum-box { padding: 14px; display: grid; gap: 10px; }
+.sb-head { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.sb-saved { display: flex; gap: 6px; flex-wrap: wrap; }
+.sb-edit { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; }
+.strum-box input[type=text] { font: inherit; padding: 7px 10px; border: 1px solid var(--line); border-radius: 8px; background: var(--bg); color: var(--ink); min-width: 0; width: 100%; }
+.sb-slots { display: flex; flex-wrap: wrap; gap: 4px; }
+.sb-slot { width: 36px; height: 50px; border-radius: 8px; border: 1px solid var(--line); background: var(--bg); color: var(--muted); cursor: pointer; display: grid; place-items: center; align-content: center; font: 700 1.25rem var(--mono); padding: 0; }
+.sb-slot small { display: block; font-size: .6rem; line-height: 1; }
+.sb-slot.beat { border-color: var(--ink); }
+.sb-slot.set { color: var(--ink); background: var(--surface); }
+.sb-slot.on { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+.sb-fill { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; align-items: center; }
+.sb-actions { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.sb-actions .btn.small { margin-left: 0; padding: 8px 12px; }
+.sb-play { display: inline-flex; gap: 6px; align-items: center; }
+.sb-play select { padding: 6px 6px; font-size: .85rem; }
+.mini:disabled { opacity: .4; cursor: default; }
+@media (max-width: 760px) { .mine-row { grid-template-columns: minmax(0, 1fr); } }
+@media (pointer: coarse) { .sb-slot { width: 38px; height: 54px; } }
