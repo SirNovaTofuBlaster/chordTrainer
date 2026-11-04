@@ -73,12 +73,14 @@ const PATTERNS = {
   offbeat: { name: "Offbeat  · ↑ · ↑ · ↑ · ↑", note: "Strum only on the 'and'. Gives a reggae feel.", s: ["","U","","U","","U","","U"] },
 };
 let running = false, timer = null, slot = 0, bar = 0, current = 0, audio = null;
-function slotsHTML(pat, active = -1) {
+function slotsHTML(pat, active = -1, tap = false) {
   return pat.map((s, i) => {
     const beat = i % 2 === 0, label = beat ? (i / 2 + 1) : "&", arrow = s === "D" ? "↓" : s === "U" ? "↑" : "·";
-    return `<div class="slot ${beat ? "beat" : ""} ${i === active ? "on" : ""}"><div>${arrow}<small>${label}</small></div></div>`;
+    const inner = `<div>${arrow}<small>${label}</small></div>`, cls = `slot ${beat ? "beat" : ""} ${i === active ? "on" : ""}`;
+    return tap ? `<button type="button" class="${cls} tap" data-i="${i}" aria-label="Count ${label}: ${s === "D" ? "down" : s === "U" ? "up" : "rest"}. Tap to change">${inner}</button>` : `<div class="${cls}">${inner}</div>`;
   }).join("");
 }
+let work = [...PATTERNS.four.s];
 function trainerChords() { return [{ root: $("c1r").value, type: $("c1t").value }, { root: $("c2r").value, type: $("c2t").value }]; }
 function renderStage() {
   const cs = trainerChords(), now = cs[current], next = cs[1 - current];
@@ -86,7 +88,7 @@ function renderStage() {
   $("now-svg").innerHTML = chordSVG(chordVoicings(now.root, now.type)[0], { label: chordName(now.root, now.type) });
   $("next-svg").innerHTML = chordSVG(chordVoicings(next.root, next.type)[0], { names: false, label: chordName(next.root, next.type) });
 }
-function renderStrum(active = -1) { $("strum").innerHTML = slotsHTML(PATTERNS[$("pattern").value].s, active); }
+function renderStrum(active = -1) { $("strum").innerHTML = slotsHTML(work, active, true); }
 function click(strong) {
   if (!audio) return;
   const o = audio.createOscillator(), g = audio.createGain(), t = audio.currentTime;
@@ -95,7 +97,7 @@ function click(strong) {
   o.connect(g).connect(audio.destination); o.start(t); o.stop(t + 0.06);
 }
 function tick() {
-  const pat = PATTERNS[$("pattern").value].s, barsPer = +$("bars").value;
+  const pat = work, barsPer = +$("bars").value;
   if (slot % 2 === 0) click(slot === 0);
   renderStrum(slot);
   const left = barsPer - (bar % barsPer);
@@ -120,7 +122,18 @@ function initTrainer() {
   });
   $("tempo").addEventListener("input", e => $("bpm-val").textContent = e.target.value);
   ["c1r","c1t","c2r","c2t"].forEach(id => $(id).addEventListener("change", () => { current = 0; renderStage(); loadBest(); }));
-  $("pattern").addEventListener("change", () => { slot = 0; renderStrum(); });
+  $("pattern").addEventListener("change", () => { work = [...PATTERNS[$("pattern").value].s]; slot = 0; renderStrum(); });
+  $("strum").addEventListener("click", e => {
+    const b = e.target.closest("button[data-i]"); if (!b) return;
+    const i = +b.dataset.i, order = ["", "D", "U"]; work[i] = order[(order.indexOf(work[i]) + 1) % 3];
+    renderStrum(running ? Math.max(0, slot - 1) : -1);
+  });
+  $("strum-save").addEventListener("click", () => {
+    const base = PATTERNS[$("pattern").value].name.replace(/\s{2}.*$/, "").replace(/ edited( v\d+)?$/, "");
+    const id = String(Date.now()); strumSaved.push({ id, name: base + " edited", s: [...work] }); saveStrum();
+    $("pattern").value = "my-" + id; $("pattern").dispatchEvent(new Event("change"));
+    $("strum-msg").textContent = "Saved to My patterns"; setTimeout(() => $("strum-msg").textContent = "", 2500);
+  });
   $("m-start").addEventListener("click", () => {
     clearInterval(mTimer); mLeft = 60; mCount = 0; $("m-count").textContent = 0; $("m-time").textContent = 60;
     $("m-tap").disabled = false; $("m-start").textContent = "Restart";

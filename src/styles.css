@@ -416,3 +416,6 @@ header.bar .brand { white-space: nowrap; }
 .mini:disabled { opacity: .4; cursor: default; }
 @media (max-width: 760px) { .mine-row { grid-template-columns: minmax(0, 1fr); } }
 @media (pointer: coarse) { .sb-slot { width: 38px; height: 54px; } }
+
+.slot.tap { background: transparent; cursor: pointer; padding: 0; }
+.strum-tools { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-top: 8px; font-size: .85rem; }
