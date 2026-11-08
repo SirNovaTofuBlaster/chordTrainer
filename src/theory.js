@@ -23,24 +23,71 @@ function spell(root, label) {
   return LET[li] + (d === 0 ? "" : d > 0 ? "#".repeat(d) : "b".repeat(-d));
 }
 
+const T = (g, id, sym, name, f) => ({ g, id, sym, name, f });
 const CHORD_TYPES = [
-  { id: "maj",  sym: "",     name: "Major",          f: ["1","3","5"] },
-  { id: "min",  sym: "m",    name: "Minor",          f: ["1","b3","5"] },
-  { id: "5",    sym: "5",    name: "Power chord",    f: ["1","5"] },
-  { id: "6",    sym: "6",    name: "Major 6th",      f: ["1","3","5","6"] },
-  { id: "m6",   sym: "m6",   name: "Minor 6th",      f: ["1","b3","5","6"] },
-  { id: "7",    sym: "7",    name: "Dominant 7th",   f: ["1","3","5","b7"] },
-  { id: "maj7", sym: "maj7", name: "Major 7th",      f: ["1","3","5","7"] },
-  { id: "m7",   sym: "m7",   name: "Minor 7th",      f: ["1","b3","5","b7"] },
-  { id: "9",    sym: "9",    name: "Dominant 9th",   f: ["1","3","5","b7","9"] },
-  { id: "add9", sym: "add9", name: "Add 9",          f: ["1","3","5","9"] },
-  { id: "69",   sym: "6/9",  name: "6/9",            f: ["1","3","5","6","9"] },
-  { id: "sus2", sym: "sus2", name: "Suspended 2nd",  f: ["1","2","5"] },
-  { id: "sus4", sym: "sus4", name: "Suspended 4th",  f: ["1","4","5"] },
-  { id: "dim",  sym: "dim",  name: "Diminished",     f: ["1","b3","b5"] },
-  { id: "dim7", sym: "dim7", name: "Diminished 7th", f: ["1","b3","b5","bb7"] },
-  { id: "m7b5", sym: "m7b5", name: "Half-diminished", f: ["1","b3","b5","b7"] },
-  { id: "aug",  sym: "aug",  name: "Augmented",      f: ["1","3","#5"] },
+  T("Triads", "maj", "", "Major", ["1","3","5"]),
+  T("Triads", "min", "m", "Minor", ["1","b3","5"]),
+  T("Triads", "5", "5", "Power chord", ["1","5"]),
+  T("Triads", "sus2", "sus2", "Suspended 2nd", ["1","2","5"]),
+  T("Triads", "sus4", "sus4", "Suspended 4th", ["1","4","5"]),
+  T("Triads", "sus24", "sus2sus4", "Suspended 2nd and 4th", ["1","2","4","5"]),
+  T("Triads", "dim", "dim", "Diminished", ["1","b3","b5"]),
+  T("Triads", "aug", "aug", "Augmented", ["1","3","#5"]),
+  T("Triads", "b5", "b5", "Major flat 5", ["1","3","b5"]),
+  T("Added notes", "add9", "add9", "Add 9", ["1","3","5","9"]),
+  T("Added notes", "madd9", "m(add9)", "Minor add 9", ["1","b3","5","9"]),
+  T("Added notes", "add4", "add4", "Add 4", ["1","3","4","5"]),
+  T("Added notes", "madd4", "m(add4)", "Minor add 4", ["1","b3","4","5"]),
+  T("Sixths", "6", "6", "Major 6th", ["1","3","5","6"]),
+  T("Sixths", "m6", "m6", "Minor 6th", ["1","b3","5","6"]),
+  T("Sixths", "69", "6/9", "6/9", ["1","3","5","6","9"]),
+  T("Sixths", "m69", "m6/9", "Minor 6/9", ["1","b3","5","6","9"]),
+  T("Sevenths", "7", "7", "Dominant 7th", ["1","3","5","b7"]),
+  T("Sevenths", "maj7", "maj7", "Major 7th", ["1","3","5","7"]),
+  T("Sevenths", "m7", "m7", "Minor 7th", ["1","b3","5","b7"]),
+  T("Sevenths", "mmaj7", "m(maj7)", "Minor major 7th", ["1","b3","5","7"]),
+  T("Sevenths", "dim7", "dim7", "Diminished 7th", ["1","b3","b5","bb7"]),
+  T("Sevenths", "m7b5", "m7b5", "Half-diminished", ["1","b3","b5","b7"]),
+  T("Sevenths", "dimmaj7", "dim(maj7)", "Diminished major 7th", ["1","b3","b5","7"]),
+  T("Sevenths", "7sus4", "7sus4", "7th suspended 4th", ["1","4","5","b7"]),
+  T("Sevenths", "7sus2", "7sus2", "7th suspended 2nd", ["1","2","5","b7"]),
+  T("Sevenths", "7b5", "7b5", "7th flat 5", ["1","3","b5","b7"]),
+  T("Sevenths", "7#5", "7#5", "7th sharp 5 (augmented 7th)", ["1","3","#5","b7"]),
+  T("Sevenths", "m7#5", "m7#5", "Minor 7th sharp 5", ["1","b3","#5","b7"]),
+  T("Sevenths", "maj7b5", "maj7b5", "Major 7th flat 5", ["1","3","b5","7"]),
+  T("Sevenths", "maj7#5", "maj7#5", "Major 7th sharp 5", ["1","3","#5","7"]),
+  T("Sevenths", "maj7#11", "maj7#11", "Major 7th sharp 11", ["1","3","5","7","#11"]),
+  T("Ninths", "9", "9", "Dominant 9th", ["1","3","5","b7","9"]),
+  T("Ninths", "maj9", "maj9", "Major 9th", ["1","3","5","7","9"]),
+  T("Ninths", "m9", "m9", "Minor 9th", ["1","b3","5","b7","9"]),
+  T("Ninths", "mmaj9", "m(maj9)", "Minor major 9th", ["1","b3","5","7","9"]),
+  T("Ninths", "m9b5", "m9b5", "Half-diminished 9th", ["1","b3","b5","b7","9"]),
+  T("Ninths", "9sus4", "9sus4", "9th suspended 4th", ["1","4","5","b7","9"]),
+  T("Ninths", "9b5", "9b5", "9th flat 5", ["1","3","b5","b7","9"]),
+  T("Ninths", "9#5", "9#5", "9th sharp 5", ["1","3","#5","b7","9"]),
+  T("Ninths", "maj9#11", "maj9#11", "Major 9th sharp 11", ["1","3","5","7","9","#11"]),
+  T("Altered", "7b9", "7b9", "7th flat 9", ["1","3","5","b7","b9"]),
+  T("Altered", "7#9", "7#9", "7th sharp 9 (the Hendrix chord)", ["1","3","5","b7","#9"]),
+  T("Altered", "7b5b9", "7b5b9", "7th flat 5 flat 9", ["1","3","b5","b7","b9"]),
+  T("Altered", "7b5#9", "7b5#9", "7th flat 5 sharp 9", ["1","3","b5","b7","#9"]),
+  T("Altered", "7#5b9", "7#5b9", "7th sharp 5 flat 9", ["1","3","#5","b7","b9"]),
+  T("Altered", "7#5#9", "7#5#9", "7th sharp 5 sharp 9", ["1","3","#5","b7","#9"]),
+  T("Altered", "7b9#9", "7b9#9", "7th flat 9 sharp 9", ["1","3","5","b7","b9","#9"]),
+  T("Altered", "7b13", "7b13", "7th flat 13", ["1","3","5","b7","b13"]),
+  T("Altered", "7b9b13", "7b9b13", "7th flat 9 flat 13", ["1","3","b7","b9","b13"]),
+  T("Altered", "7#9b13", "7#9b13", "7th sharp 9 flat 13", ["1","3","b7","#9","b13"]),
+  T("Elevenths", "11", "11", "Dominant 11th", ["1","3","5","b7","9","11"]),
+  T("Elevenths", "m11", "m11", "Minor 11th", ["1","b3","5","b7","9","11"]),
+  T("Elevenths", "maj11", "maj11", "Major 11th", ["1","3","5","7","9","11"]),
+  T("Elevenths", "7#11", "7#11", "7th sharp 11", ["1","3","5","b7","#11"]),
+  T("Elevenths", "9#11", "9#11", "9th sharp 11", ["1","3","5","b7","9","#11"]),
+  T("Thirteenths", "13", "13", "Dominant 13th", ["1","3","5","b7","9","13"]),
+  T("Thirteenths", "m13", "m13", "Minor 13th", ["1","b3","5","b7","9","13"]),
+  T("Thirteenths", "maj13", "maj13", "Major 13th", ["1","3","5","7","9","13"]),
+  T("Thirteenths", "13sus4", "13sus4", "13th suspended 4th", ["1","4","5","b7","9","13"]),
+  T("Thirteenths", "13b9", "13b9", "13th flat 9", ["1","3","5","b7","b9","13"]),
+  T("Thirteenths", "13#11", "13#11", "13th sharp 11", ["1","3","5","b7","9","#11","13"]),
+  T("Thirteenths", "13#9", "13#9", "13th sharp 9", ["1","3","5","b7","#9","13"]),
 ];
 const TYPE = Object.fromEntries(CHORD_TYPES.map(t => [t.id, t]));
 
@@ -95,6 +142,80 @@ function movable(shape, fret, label) {
 function chordName(root, typeId) { return root + TYPE[typeId].sym; }
 function chordNotes(root, typeId) { return TYPE[typeId].f.map(l => ({ label: l, name: spell(root, l), pc: (pcOf(root) + parseLabel(l).semis) % 12 })); }
 
+
+// Voicings for chord types with no hand-picked shape: search every fingering inside a 4-fret window.
+const GEN_CACHE = {};
+function generatedVoicings(root, typeId) {
+  const key = root + "|" + typeId; if (GEN_CACHE[key]) return GEN_CACHE[key];
+  const f = TYPE[typeId].f, rp = pcOf(root);
+  const semis = f.map(l => parseLabel(l).semis);
+  const has = l => f.includes(l);
+  const optional = new Set();
+  if (f.length >= 4) optional.add("5");
+  if (has("11") || has("13")) optional.add("9");
+  if (has("13")) optional.add("11");
+  if (has("#11") && has("13")) optional.add("9");
+  const reqPc = f.filter(l => l !== "1" && !optional.has(l)).map(l => (rp + parseLabel(l).semis) % 12);
+  const allowed = new Set(f.map(l => (rp + parseLabel(l).semis) % 12));
+  let needList = [rp, ...reqPc];
+  let need = new Set(needList);
+  const found = [];
+  for (let attempt = 0; attempt < 3 && !found.length; attempt++) {
+   if (attempt > 0) { if (needList.length <= 3) break; needList = needList.slice(0, -1); need = new Set(needList); }
+   for (let base = 0; base <= 12; base++) {
+    const opts = STD_PC.map(open => {
+      const o = [null];
+      if (base <= 3 && allowed.has(open)) o.push(0);
+      for (let fr = Math.max(base, 1); fr <= base + 3; fr++) if (allowed.has((open + fr) % 12)) o.push(fr);
+      return o;
+    });
+    const cur = Array(6).fill(null);
+    const rec = i => {
+      if (i === 6) { const v = judge(cur.slice(), base); if (v) found.push(v); return; }
+      for (const fr of opts[i]) { cur[i] = fr; rec(i + 1); }
+    };
+    const judge = (fr, base) => {
+      const snd = fr.map((x, i) => x === null ? -1 : i).filter(i => i >= 0);
+      if (snd.length < 4) return null;
+      const lo = snd[0], hi = snd[snd.length - 1];
+      if (hi - lo + 1 !== snd.length || lo > 2) return null;
+      if ((STD_PC[lo] + fr[lo]) % 12 !== rp) return null;
+      const pcs = new Set(snd.map(i => (STD_PC[i] + fr[i]) % 12));
+      for (const n of need) if (!pcs.has(n)) return null;
+      const fretted = snd.filter(i => fr[i] > 0);
+      if (!fretted.length) return null;
+      const maxF = Math.max(...fretted.map(i => fr[i])), minF = Math.min(...fretted.map(i => fr[i]));
+      if (base > 0 && minF !== base && base > 1) return null;
+      const atMin = fretted.filter(i => fr[i] === minF);
+      let barre = null;
+      if (atMin.length >= 2) {
+        const a = Math.min(...atMin), b = Math.max(...atMin);
+        const inside = snd.filter(i => i > a && i < b);
+        if (inside.some(i => fr[i] < minF)) barre = null; else barre = { from: a, to: b, fret: minF };
+      }
+      const fingers = Array(6).fill(0); let n = 1;
+      if (barre) { atMin.forEach(i => fingers[i] = 1); n = 2; }
+      const rest = fretted.filter(i => !(barre && fr[i] === minF)).sort((x, y) => fr[x] - fr[y] || x - y);
+      if (rest.length + (barre ? 1 : 0) > 4) return null;
+      rest.forEach(i => { fingers[i] = n++; });
+      if (!barre && atMin.length >= 2) { /* two notes on the same fret with no barre possible */ return null; }
+      const open = snd.filter(i => fr[i] === 0).length, muted = 6 - snd.length;
+      const score = (rest.length + (barre ? 1 : 0)) * 1.0 + muted * 0.5 - open * 0.6 - snd.length * 0.4 + minF * 0.12 + (maxF - minF) * 0.3;
+      return { frets: fr, fingers, barre, base: maxF <= 4 ? 1 : minF, score, open: open > 0 };
+    };
+    rec(0);
+   }
+  }
+  const seen = new Set(), out = [];
+  found.sort((a, b) => a.score - b.score).forEach(v => {
+    const k = v.frets.join(","); if (seen.has(k) || out.length >= 3) return; seen.add(k);
+    const lo = v.frets.find(x => x !== null) , minF = Math.min(...v.frets.filter(x => x > 0));
+    v.label = v.open && !v.barre && v.base === 1 ? "Open" : (v.barre ? "Barre" : "Shape") + ", fret " + minF;
+    delete v.score; delete v.open; out.push(v);
+  });
+  return GEN_CACHE[key] = out;
+}
+
 function chordVoicings(root, typeId) {
   const out = [], seen = new Set(), pc = pcOf(root);
   const add = v => { const k = v.frets.join(","); if (!seen.has(k)) { seen.add(k); out.push(v); } };
@@ -110,6 +231,7 @@ function chordVoicings(root, typeId) {
     else v.label = (v.barre ? "Barre" : "Movable") + ", " + v.label + ", fret " + (v.base);
     add(v);
   });
+  if (out.length < 3) generatedVoicings(root, typeId).forEach(v => { if (out.length < 3) add(v); });
   return out;
 }
 

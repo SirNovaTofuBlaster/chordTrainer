@@ -111,7 +111,7 @@ function loadBest() { let b = null; try { b = localStorage.getItem(bestKey()); }
 let mTimer = null, mLeft = 60, mCount = 0;
 function initTrainer() {
   ["c1r","c2r"].forEach(id => $(id).innerHTML = optionsOf(ROOTS));
-  ["c1t","c2t"].forEach(id => $(id).innerHTML = CHORD_TYPES.map(t => `<option value="${t.id}">${t.name}</option>`).join(""));
+  ["c1t","c2t"].forEach(id => $(id).innerHTML = typeOptions(false));
   $("c1r").value = "G"; $("c2r").value = "D";
   $("pattern").innerHTML = Object.entries(PATTERNS).map(([k, p]) => `<option value="${k}">${p.name}</option>`).join("");
   $("patterns").innerHTML = Object.values(PATTERNS).map(p => `<div class="pat"><h4>${p.name}</h4><p>${p.note}</p><div class="strum">${slotsHTML(p.s)}</div></div>`).join("");
@@ -182,7 +182,7 @@ function renderMine() {
 }
 function initMine() {
   $("mine-root").innerHTML = optionsOf(ROOTS); $("mine-root").value = "A";
-  $("mine-type").innerHTML = CHORD_TYPES.map(t => `<option value="${t.id}">${t.name}</option>`).join("");
+  $("mine-type").innerHTML = typeOptions(false);
   $("mine-quick").innerHTML = QUICK.map(([r, t]) => `<button type="button" class="chip" id="mq-${r}${t}" data-r="${r}" data-t="${t}">${chordName(r, t)}</button>`).join("");
   $("mine-quick").querySelectorAll("button").forEach(b => b.addEventListener("click", () => addMine(b.dataset.r, b.dataset.t)));
   $("mine-add").addEventListener("click", () => addMine($("mine-root").value, $("mine-type").value));

@@ -432,6 +432,8 @@ header.bar .brand { white-space: nowrap; }
 .slot.tap { background: transparent; cursor: pointer; padding: 0; }
 .strum-tools { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-top: 8px; font-size: .85rem; }
 
+.lib-group { grid-column: 1 / -1; margin: 14px 0 0; font-size: .85rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+
 body { margin: 0; }
 </style>
 </head>
@@ -753,24 +755,71 @@ function spell(root, label) {
   return LET[li] + (d === 0 ? "" : d > 0 ? "#".repeat(d) : "b".repeat(-d));
 }
 
+const T = (g, id, sym, name, f) => ({ g, id, sym, name, f });
 const CHORD_TYPES = [
-  { id: "maj",  sym: "",     name: "Major",          f: ["1","3","5"] },
-  { id: "min",  sym: "m",    name: "Minor",          f: ["1","b3","5"] },
-  { id: "5",    sym: "5",    name: "Power chord",    f: ["1","5"] },
-  { id: "6",    sym: "6",    name: "Major 6th",      f: ["1","3","5","6"] },
-  { id: "m6",   sym: "m6",   name: "Minor 6th",      f: ["1","b3","5","6"] },
-  { id: "7",    sym: "7",    name: "Dominant 7th",   f: ["1","3","5","b7"] },
-  { id: "maj7", sym: "maj7", name: "Major 7th",      f: ["1","3","5","7"] },
-  { id: "m7",   sym: "m7",   name: "Minor 7th",      f: ["1","b3","5","b7"] },
-  { id: "9",    sym: "9",    name: "Dominant 9th",   f: ["1","3","5","b7","9"] },
-  { id: "add9", sym: "add9", name: "Add 9",          f: ["1","3","5","9"] },
-  { id: "69",   sym: "6/9",  name: "6/9",            f: ["1","3","5","6","9"] },
-  { id: "sus2", sym: "sus2", name: "Suspended 2nd",  f: ["1","2","5"] },
-  { id: "sus4", sym: "sus4", name: "Suspended 4th",  f: ["1","4","5"] },
-  { id: "dim",  sym: "dim",  name: "Diminished",     f: ["1","b3","b5"] },
-  { id: "dim7", sym: "dim7", name: "Diminished 7th", f: ["1","b3","b5","bb7"] },
-  { id: "m7b5", sym: "m7b5", name: "Half-diminished", f: ["1","b3","b5","b7"] },
-  { id: "aug",  sym: "aug",  name: "Augmented",      f: ["1","3","#5"] },
+  T("Triads", "maj", "", "Major", ["1","3","5"]),
+  T("Triads", "min", "m", "Minor", ["1","b3","5"]),
+  T("Triads", "5", "5", "Power chord", ["1","5"]),
+  T("Triads", "sus2", "sus2", "Suspended 2nd", ["1","2","5"]),
+  T("Triads", "sus4", "sus4", "Suspended 4th", ["1","4","5"]),
+  T("Triads", "sus24", "sus2sus4", "Suspended 2nd and 4th", ["1","2","4","5"]),
+  T("Triads", "dim", "dim", "Diminished", ["1","b3","b5"]),
+  T("Triads", "aug", "aug", "Augmented", ["1","3","#5"]),
+  T("Triads", "b5", "b5", "Major flat 5", ["1","3","b5"]),
+  T("Added notes", "add9", "add9", "Add 9", ["1","3","5","9"]),
+  T("Added notes", "madd9", "m(add9)", "Minor add 9", ["1","b3","5","9"]),
+  T("Added notes", "add4", "add4", "Add 4", ["1","3","4","5"]),
+  T("Added notes", "madd4", "m(add4)", "Minor add 4", ["1","b3","4","5"]),
+  T("Sixths", "6", "6", "Major 6th", ["1","3","5","6"]),
+  T("Sixths", "m6", "m6", "Minor 6th", ["1","b3","5","6"]),
+  T("Sixths", "69", "6/9", "6/9", ["1","3","5","6","9"]),
+  T("Sixths", "m69", "m6/9", "Minor 6/9", ["1","b3","5","6","9"]),
+  T("Sevenths", "7", "7", "Dominant 7th", ["1","3","5","b7"]),
+  T("Sevenths", "maj7", "maj7", "Major 7th", ["1","3","5","7"]),
+  T("Sevenths", "m7", "m7", "Minor 7th", ["1","b3","5","b7"]),
+  T("Sevenths", "mmaj7", "m(maj7)", "Minor major 7th", ["1","b3","5","7"]),
+  T("Sevenths", "dim7", "dim7", "Diminished 7th", ["1","b3","b5","bb7"]),
+  T("Sevenths", "m7b5", "m7b5", "Half-diminished", ["1","b3","b5","b7"]),
+  T("Sevenths", "dimmaj7", "dim(maj7)", "Diminished major 7th", ["1","b3","b5","7"]),
+  T("Sevenths", "7sus4", "7sus4", "7th suspended 4th", ["1","4","5","b7"]),
+  T("Sevenths", "7sus2", "7sus2", "7th suspended 2nd", ["1","2","5","b7"]),
+  T("Sevenths", "7b5", "7b5", "7th flat 5", ["1","3","b5","b7"]),
+  T("Sevenths", "7#5", "7#5", "7th sharp 5 (augmented 7th)", ["1","3","#5","b7"]),
+  T("Sevenths", "m7#5", "m7#5", "Minor 7th sharp 5", ["1","b3","#5","b7"]),
+  T("Sevenths", "maj7b5", "maj7b5", "Major 7th flat 5", ["1","3","b5","7"]),
+  T("Sevenths", "maj7#5", "maj7#5", "Major 7th sharp 5", ["1","3","#5","7"]),
+  T("Sevenths", "maj7#11", "maj7#11", "Major 7th sharp 11", ["1","3","5","7","#11"]),
+  T("Ninths", "9", "9", "Dominant 9th", ["1","3","5","b7","9"]),
+  T("Ninths", "maj9", "maj9", "Major 9th", ["1","3","5","7","9"]),
+  T("Ninths", "m9", "m9", "Minor 9th", ["1","b3","5","b7","9"]),
+  T("Ninths", "mmaj9", "m(maj9)", "Minor major 9th", ["1","b3","5","7","9"]),
+  T("Ninths", "m9b5", "m9b5", "Half-diminished 9th", ["1","b3","b5","b7","9"]),
+  T("Ninths", "9sus4", "9sus4", "9th suspended 4th", ["1","4","5","b7","9"]),
+  T("Ninths", "9b5", "9b5", "9th flat 5", ["1","3","b5","b7","9"]),
+  T("Ninths", "9#5", "9#5", "9th sharp 5", ["1","3","#5","b7","9"]),
+  T("Ninths", "maj9#11", "maj9#11", "Major 9th sharp 11", ["1","3","5","7","9","#11"]),
+  T("Altered", "7b9", "7b9", "7th flat 9", ["1","3","5","b7","b9"]),
+  T("Altered", "7#9", "7#9", "7th sharp 9 (the Hendrix chord)", ["1","3","5","b7","#9"]),
+  T("Altered", "7b5b9", "7b5b9", "7th flat 5 flat 9", ["1","3","b5","b7","b9"]),
+  T("Altered", "7b5#9", "7b5#9", "7th flat 5 sharp 9", ["1","3","b5","b7","#9"]),
+  T("Altered", "7#5b9", "7#5b9", "7th sharp 5 flat 9", ["1","3","#5","b7","b9"]),
+  T("Altered", "7#5#9", "7#5#9", "7th sharp 5 sharp 9", ["1","3","#5","b7","#9"]),
+  T("Altered", "7b9#9", "7b9#9", "7th flat 9 sharp 9", ["1","3","5","b7","b9","#9"]),
+  T("Altered", "7b13", "7b13", "7th flat 13", ["1","3","5","b7","b13"]),
+  T("Altered", "7b9b13", "7b9b13", "7th flat 9 flat 13", ["1","3","b7","b9","b13"]),
+  T("Altered", "7#9b13", "7#9b13", "7th sharp 9 flat 13", ["1","3","b7","#9","b13"]),
+  T("Elevenths", "11", "11", "Dominant 11th", ["1","3","5","b7","9","11"]),
+  T("Elevenths", "m11", "m11", "Minor 11th", ["1","b3","5","b7","9","11"]),
+  T("Elevenths", "maj11", "maj11", "Major 11th", ["1","3","5","7","9","11"]),
+  T("Elevenths", "7#11", "7#11", "7th sharp 11", ["1","3","5","b7","#11"]),
+  T("Elevenths", "9#11", "9#11", "9th sharp 11", ["1","3","5","b7","9","#11"]),
+  T("Thirteenths", "13", "13", "Dominant 13th", ["1","3","5","b7","9","13"]),
+  T("Thirteenths", "m13", "m13", "Minor 13th", ["1","b3","5","b7","9","13"]),
+  T("Thirteenths", "maj13", "maj13", "Major 13th", ["1","3","5","7","9","13"]),
+  T("Thirteenths", "13sus4", "13sus4", "13th suspended 4th", ["1","4","5","b7","9","13"]),
+  T("Thirteenths", "13b9", "13b9", "13th flat 9", ["1","3","5","b7","b9","13"]),
+  T("Thirteenths", "13#11", "13#11", "13th sharp 11", ["1","3","5","b7","9","#11","13"]),
+  T("Thirteenths", "13#9", "13#9", "13th sharp 9", ["1","3","5","b7","#9","13"]),
 ];
 const TYPE = Object.fromEntries(CHORD_TYPES.map(t => [t.id, t]));
 
@@ -825,6 +874,80 @@ function movable(shape, fret, label) {
 function chordName(root, typeId) { return root + TYPE[typeId].sym; }
 function chordNotes(root, typeId) { return TYPE[typeId].f.map(l => ({ label: l, name: spell(root, l), pc: (pcOf(root) + parseLabel(l).semis) % 12 })); }
 
+
+// Voicings for chord types with no hand-picked shape: search every fingering inside a 4-fret window.
+const GEN_CACHE = {};
+function generatedVoicings(root, typeId) {
+  const key = root + "|" + typeId; if (GEN_CACHE[key]) return GEN_CACHE[key];
+  const f = TYPE[typeId].f, rp = pcOf(root);
+  const semis = f.map(l => parseLabel(l).semis);
+  const has = l => f.includes(l);
+  const optional = new Set();
+  if (f.length >= 4) optional.add("5");
+  if (has("11") || has("13")) optional.add("9");
+  if (has("13")) optional.add("11");
+  if (has("#11") && has("13")) optional.add("9");
+  const reqPc = f.filter(l => l !== "1" && !optional.has(l)).map(l => (rp + parseLabel(l).semis) % 12);
+  const allowed = new Set(f.map(l => (rp + parseLabel(l).semis) % 12));
+  let needList = [rp, ...reqPc];
+  let need = new Set(needList);
+  const found = [];
+  for (let attempt = 0; attempt < 3 && !found.length; attempt++) {
+   if (attempt > 0) { if (needList.length <= 3) break; needList = needList.slice(0, -1); need = new Set(needList); }
+   for (let base = 0; base <= 12; base++) {
+    const opts = STD_PC.map(open => {
+      const o = [null];
+      if (base <= 3 && allowed.has(open)) o.push(0);
+      for (let fr = Math.max(base, 1); fr <= base + 3; fr++) if (allowed.has((open + fr) % 12)) o.push(fr);
+      return o;
+    });
+    const cur = Array(6).fill(null);
+    const rec = i => {
+      if (i === 6) { const v = judge(cur.slice(), base); if (v) found.push(v); return; }
+      for (const fr of opts[i]) { cur[i] = fr; rec(i + 1); }
+    };
+    const judge = (fr, base) => {
+      const snd = fr.map((x, i) => x === null ? -1 : i).filter(i => i >= 0);
+      if (snd.length < 4) return null;
+      const lo = snd[0], hi = snd[snd.length - 1];
+      if (hi - lo + 1 !== snd.length || lo > 2) return null;
+      if ((STD_PC[lo] + fr[lo]) % 12 !== rp) return null;
+      const pcs = new Set(snd.map(i => (STD_PC[i] + fr[i]) % 12));
+      for (const n of need) if (!pcs.has(n)) return null;
+      const fretted = snd.filter(i => fr[i] > 0);
+      if (!fretted.length) return null;
+      const maxF = Math.max(...fretted.map(i => fr[i])), minF = Math.min(...fretted.map(i => fr[i]));
+      if (base > 0 && minF !== base && base > 1) return null;
+      const atMin = fretted.filter(i => fr[i] === minF);
+      let barre = null;
+      if (atMin.length >= 2) {
+        const a = Math.min(...atMin), b = Math.max(...atMin);
+        const inside = snd.filter(i => i > a && i < b);
+        if (inside.some(i => fr[i] < minF)) barre = null; else barre = { from: a, to: b, fret: minF };
+      }
+      const fingers = Array(6).fill(0); let n = 1;
+      if (barre) { atMin.forEach(i => fingers[i] = 1); n = 2; }
+      const rest = fretted.filter(i => !(barre && fr[i] === minF)).sort((x, y) => fr[x] - fr[y] || x - y);
+      if (rest.length + (barre ? 1 : 0) > 4) return null;
+      rest.forEach(i => { fingers[i] = n++; });
+      if (!barre && atMin.length >= 2) { /* two notes on the same fret with no barre possible */ return null; }
+      const open = snd.filter(i => fr[i] === 0).length, muted = 6 - snd.length;
+      const score = (rest.length + (barre ? 1 : 0)) * 1.0 + muted * 0.5 - open * 0.6 - snd.length * 0.4 + minF * 0.12 + (maxF - minF) * 0.3;
+      return { frets: fr, fingers, barre, base: maxF <= 4 ? 1 : minF, score, open: open > 0 };
+    };
+    rec(0);
+   }
+  }
+  const seen = new Set(), out = [];
+  found.sort((a, b) => a.score - b.score).forEach(v => {
+    const k = v.frets.join(","); if (seen.has(k) || out.length >= 3) return; seen.add(k);
+    const lo = v.frets.find(x => x !== null) , minF = Math.min(...v.frets.filter(x => x > 0));
+    v.label = v.open && !v.barre && v.base === 1 ? "Open" : (v.barre ? "Barre" : "Shape") + ", fret " + minF;
+    delete v.score; delete v.open; out.push(v);
+  });
+  return GEN_CACHE[key] = out;
+}
+
 function chordVoicings(root, typeId) {
   const out = [], seen = new Set(), pc = pcOf(root);
   const add = v => { const k = v.frets.join(","); if (!seen.has(k)) { seen.add(k); out.push(v); } };
@@ -840,6 +963,7 @@ function chordVoicings(root, typeId) {
     else v.label = (v.barre ? "Barre" : "Movable") + ", " + v.label + ", fret " + (v.base);
     add(v);
   });
+  if (out.length < 3) generatedVoicings(root, typeId).forEach(v => { if (out.length < 3) add(v); });
   return out;
 }
 
@@ -947,6 +1071,7 @@ const $ = id => document.getElementById(id);
 const PCNAME = ["C","C#","D","Eb","E","F","F#","G","Ab","A","Bb","B"];
 const NOTE_ROOTS = ["C","C#","Db","D","Eb","E","F","F#","G","G#","Ab","A","Bb","B"];
 const esc = t => t.replace(/[&<>]/g, m => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[m]));
+const typeOptions = withSym => [...new Set(CHORD_TYPES.map(t => t.g))].map(g => `<optgroup label="${g}">` + CHORD_TYPES.filter(t => t.g === g).map(t => `<option value="${t.id}">${t.name}${withSym && t.sym ? " (" + t.sym + ")" : ""}</option>`).join("") + `</optgroup>`).join("");
 const optionsOf = (arr, fmt) => arr.map(v => `<option value="${v}">${fmt ? fmt(v) : v}</option>`).join("");
 
 function chordSVG(v, opts = {}) {
@@ -996,16 +1121,18 @@ function renderFinder() {
   $("res-notes").textContent = chordNotes(cRoot, cType).map(n => n.name).join(" ");
   $("voicings").innerHTML = vs.map(v => `<div class="voicing">${chordSVG(v, { label: name })}<span class="vlabel">${esc(v.label)}</span></div>`).join("");
   $("all-h").textContent = "Every chord on " + cRoot;
+  let lastG = "";
   $("library").innerHTML = CHORD_TYPES.map(t => {
     const v = chordVoicings(cRoot, t.id)[0];
-    return `<button type="button" class="card cbtn" id="card-${t.id}" data-type="${t.id}"><h3>${chordName(cRoot, t.id)}</h3><span class="sub">${t.name}</span>${chordSVG(v, { label: chordName(cRoot, t.id) })}</button>`;
+    const head = t.g !== lastG ? `<h4 class="lib-group">${t.g}</h4>` : ""; lastG = t.g;
+    return head + `<button type="button" class="card cbtn" id="card-${t.id}" data-type="${t.id}"><h3>${chordName(cRoot, t.id)}</h3><span class="sub">${t.name}</span>${chordSVG(v, { label: chordName(cRoot, t.id) })}</button>`;
   }).join("");
-  $("library").querySelectorAll("button").forEach(b => b.addEventListener("click", () => { cType = b.dataset.type; renderFinder(); $("res-name").scrollIntoView({ block: "center", behavior: "smooth" }); }));
+  $("library").querySelectorAll("button.cbtn").forEach(b => b.addEventListener("click", () => { cType = b.dataset.type; renderFinder(); $("res-name").scrollIntoView({ block: "center", behavior: "smooth" }); }));
 }
 const QUICK = [["G","maj"],["C","maj"],["D","maj"],["E","min"],["A","min"],["E","maj"],["A","maj"],["D","min"],["F","maj"]];
 function initFinder() {
   const quick = QUICK;
-  $("ctype").innerHTML = CHORD_TYPES.map(t => `<option value="${t.id}">${t.name}${t.sym ? " (" + t.sym + ")" : ""}</option>`).join("");
+  $("ctype").innerHTML = typeOptions(true);
   $("ctype").addEventListener("change", e => { cType = e.target.value; renderFinder(); });
   $("quick").innerHTML = quick.map(([r, t]) => `<button type="button" class="chip" id="q-${r}${t}" data-r="${r}" data-t="${t}">${chordName(r, t)}</button>`).join("");
   $("quick").querySelectorAll("button").forEach(b => b.addEventListener("click", () => { cRoot = b.dataset.r; cType = b.dataset.t; renderFinder(); }));
@@ -1062,7 +1189,7 @@ function initFretboard() {
   const groups = [...new Set(SCALES.map(s => s.group))];
   $("fb-scale").innerHTML = groups.map(g => `<optgroup label="${g}">` + SCALES.filter(s => s.group === g).map(s => `<option value="${s.id}">${s.name}</option>`).join("") + `</optgroup>`).join("");
   $("fb-scale").value = "minpent";
-  $("fb-chord").innerHTML = CHORD_TYPES.map(t => `<option value="${t.id}">${t.name}</option>`).join("");
+  $("fb-chord").innerHTML = typeOptions(false);
   $("fb-tuning").innerHTML = TUNINGS.map(t => `<option value="${t.id}">${t.name}</option>`).join("");
   const toggle = () => { const m = $("fb-mode").value; $("fb-scale-wrap").hidden = m !== "scale"; $("fb-chord-wrap").hidden = m !== "chord"; };
   ["fb-mode","fb-root","fb-scale","fb-chord","fb-tuning","fb-label","fb-frets"].forEach(id => $(id).addEventListener("change", () => { toggle(); renderFretboard(); }));
@@ -1182,7 +1309,7 @@ function loadBest() { let b = null; try { b = localStorage.getItem(bestKey()); }
 let mTimer = null, mLeft = 60, mCount = 0;
 function initTrainer() {
   ["c1r","c2r"].forEach(id => $(id).innerHTML = optionsOf(ROOTS));
-  ["c1t","c2t"].forEach(id => $(id).innerHTML = CHORD_TYPES.map(t => `<option value="${t.id}">${t.name}</option>`).join(""));
+  ["c1t","c2t"].forEach(id => $(id).innerHTML = typeOptions(false));
   $("c1r").value = "G"; $("c2r").value = "D";
   $("pattern").innerHTML = Object.entries(PATTERNS).map(([k, p]) => `<option value="${k}">${p.name}</option>`).join("");
   $("patterns").innerHTML = Object.values(PATTERNS).map(p => `<div class="pat"><h4>${p.name}</h4><p>${p.note}</p><div class="strum">${slotsHTML(p.s)}</div></div>`).join("");
@@ -1253,7 +1380,7 @@ function renderMine() {
 }
 function initMine() {
   $("mine-root").innerHTML = optionsOf(ROOTS); $("mine-root").value = "A";
-  $("mine-type").innerHTML = CHORD_TYPES.map(t => `<option value="${t.id}">${t.name}</option>`).join("");
+  $("mine-type").innerHTML = typeOptions(false);
   $("mine-quick").innerHTML = QUICK.map(([r, t]) => `<button type="button" class="chip" id="mq-${r}${t}" data-r="${r}" data-t="${t}">${chordName(r, t)}</button>`).join("");
   $("mine-quick").querySelectorAll("button").forEach(b => b.addEventListener("click", () => addMine(b.dataset.r, b.dataset.t)));
   $("mine-add").addEventListener("click", () => addMine($("mine-root").value, $("mine-type").value));

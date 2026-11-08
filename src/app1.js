@@ -5,6 +5,7 @@ const $ = id => document.getElementById(id);
 const PCNAME = ["C","C#","D","Eb","E","F","F#","G","Ab","A","Bb","B"];
 const NOTE_ROOTS = ["C","C#","Db","D","Eb","E","F","F#","G","G#","Ab","A","Bb","B"];
 const esc = t => t.replace(/[&<>]/g, m => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[m]));
+const typeOptions = withSym => [...new Set(CHORD_TYPES.map(t => t.g))].map(g => `<optgroup label="${g}">` + CHORD_TYPES.filter(t => t.g === g).map(t => `<option value="${t.id}">${t.name}${withSym && t.sym ? " (" + t.sym + ")" : ""}</option>`).join("") + `</optgroup>`).join("");
 const optionsOf = (arr, fmt) => arr.map(v => `<option value="${v}">${fmt ? fmt(v) : v}</option>`).join("");
 
 function chordSVG(v, opts = {}) {
@@ -54,16 +55,18 @@ function renderFinder() {
   $("res-notes").textContent = chordNotes(cRoot, cType).map(n => n.name).join(" ");
   $("voicings").innerHTML = vs.map(v => `<div class="voicing">${chordSVG(v, { label: name })}<span class="vlabel">${esc(v.label)}</span></div>`).join("");
   $("all-h").textContent = "Every chord on " + cRoot;
+  let lastG = "";
   $("library").innerHTML = CHORD_TYPES.map(t => {
     const v = chordVoicings(cRoot, t.id)[0];
-    return `<button type="button" class="card cbtn" id="card-${t.id}" data-type="${t.id}"><h3>${chordName(cRoot, t.id)}</h3><span class="sub">${t.name}</span>${chordSVG(v, { label: chordName(cRoot, t.id) })}</button>`;
+    const head = t.g !== lastG ? `<h4 class="lib-group">${t.g}</h4>` : ""; lastG = t.g;
+    return head + `<button type="button" class="card cbtn" id="card-${t.id}" data-type="${t.id}"><h3>${chordName(cRoot, t.id)}</h3><span class="sub">${t.name}</span>${chordSVG(v, { label: chordName(cRoot, t.id) })}</button>`;
   }).join("");
-  $("library").querySelectorAll("button").forEach(b => b.addEventListener("click", () => { cType = b.dataset.type; renderFinder(); $("res-name").scrollIntoView({ block: "center", behavior: "smooth" }); }));
+  $("library").querySelectorAll("button.cbtn").forEach(b => b.addEventListener("click", () => { cType = b.dataset.type; renderFinder(); $("res-name").scrollIntoView({ block: "center", behavior: "smooth" }); }));
 }
 const QUICK = [["G","maj"],["C","maj"],["D","maj"],["E","min"],["A","min"],["E","maj"],["A","maj"],["D","min"],["F","maj"]];
 function initFinder() {
   const quick = QUICK;
-  $("ctype").innerHTML = CHORD_TYPES.map(t => `<option value="${t.id}">${t.name}${t.sym ? " (" + t.sym + ")" : ""}</option>`).join("");
+  $("ctype").innerHTML = typeOptions(true);
   $("ctype").addEventListener("change", e => { cType = e.target.value; renderFinder(); });
   $("quick").innerHTML = quick.map(([r, t]) => `<button type="button" class="chip" id="q-${r}${t}" data-r="${r}" data-t="${t}">${chordName(r, t)}</button>`).join("");
   $("quick").querySelectorAll("button").forEach(b => b.addEventListener("click", () => { cRoot = b.dataset.r; cType = b.dataset.t; renderFinder(); }));
@@ -120,7 +123,7 @@ function initFretboard() {
   const groups = [...new Set(SCALES.map(s => s.group))];
   $("fb-scale").innerHTML = groups.map(g => `<optgroup label="${g}">` + SCALES.filter(s => s.group === g).map(s => `<option value="${s.id}">${s.name}</option>`).join("") + `</optgroup>`).join("");
   $("fb-scale").value = "minpent";
-  $("fb-chord").innerHTML = CHORD_TYPES.map(t => `<option value="${t.id}">${t.name}</option>`).join("");
+  $("fb-chord").innerHTML = typeOptions(false);
   $("fb-tuning").innerHTML = TUNINGS.map(t => `<option value="${t.id}">${t.name}</option>`).join("");
   const toggle = () => { const m = $("fb-mode").value; $("fb-scale-wrap").hidden = m !== "scale"; $("fb-chord-wrap").hidden = m !== "chord"; };
   ["fb-mode","fb-root","fb-scale","fb-chord","fb-tuning","fb-label","fb-frets"].forEach(id => $(id).addEventListener("change", () => { toggle(); renderFretboard(); }));

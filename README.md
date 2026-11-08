@@ -7,6 +7,7 @@ Guitar chords, scales and practice tools, with a left-handed and right-handed sw
 - Fretboard with 24 scales (including Egyptian and Middle Eastern ones), chord notes and tunings
 - Keys, progressions, circle of fifths and a capo helper
 - Chord change trainer with a metronome
+- Chords: 63 chord types (triads, added notes, 6ths, 7ths, 9ths, altered, 11ths, 13ths), each with diagrams for all 12 roots
 - Daily exercises: a 20-minute routine with timers, a streak counter and ten beginner chord exercises
 - Strumming patterns: save your own patterns on the My chords page, make variations, and send them to the trainer
 - Songs with the chords written above the words
