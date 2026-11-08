@@ -34,6 +34,7 @@ const CHORD_TYPES = [
   { id: "m7",   sym: "m7",   name: "Minor 7th",      f: ["1","b3","5","b7"] },
   { id: "9",    sym: "9",    name: "Dominant 9th",   f: ["1","3","5","b7","9"] },
   { id: "add9", sym: "add9", name: "Add 9",          f: ["1","3","5","9"] },
+  { id: "69",   sym: "6/9",  name: "6/9",            f: ["1","3","5","6","9"] },
   { id: "sus2", sym: "sus2", name: "Suspended 2nd",  f: ["1","2","5"] },
   { id: "sus4", sym: "sus4", name: "Suspended 4th",  f: ["1","4","5"] },
   { id: "dim",  sym: "dim",  name: "Diminished",     f: ["1","b3","b5"] },
@@ -47,7 +48,7 @@ const TYPE = Object.fromEntries(CHORD_TYPES.map(t => [t.id, t]));
 const E_SHAPES = {
   maj: [0,2,2,1,0,0], min: [0,2,2,0,0,0], "5": [0,2,2,null,null,null], "6": [0,2,2,1,2,0],
   m6: [0,2,2,0,2,0], "7": [0,2,0,1,0,0], maj7: [0,2,1,1,0,0], m7: [0,2,0,0,0,0],
-  "9": [0,2,0,1,0,2], add9: [0,2,2,1,0,2], sus4: [0,2,2,2,0,0], m7b5: [0,1,0,0,3,null],
+  "9": [0,2,0,1,0,2], add9: [0,2,2,1,0,2], "69": [0,2,2,1,2,2], sus4: [0,2,2,2,0,0], m7b5: [0,1,0,0,3,null],
 };
 const A_SHAPES = {
   maj: [null,0,2,2,2,0], min: [null,0,2,2,1,0], "5": [null,0,2,2,null,null], "6": [null,0,2,2,2,2],
@@ -102,7 +103,8 @@ function chordVoicings(root, typeId) {
   if (root === "F" && typeId === "maj") add(EASY_F);
   const cands = [];
   if (E_SHAPES[typeId]) cands.push(movable(E_SHAPES[typeId], (pc - 4 + 12) % 12, "E shape"));
-  if (A_SHAPES[typeId]) cands.push(movable(A_SHAPES[typeId], (pc - 9 + 12) % 12, "A shape"));
+  if (typeId === "69") cands.push(movable([N,1,0,0,1,1], (pc - 9 + 12 - 1 + 12) % 12, "A shape"));
+  else if (A_SHAPES[typeId]) cands.push(movable(A_SHAPES[typeId], (pc - 9 + 12) % 12, "A shape"));
   cands.sort((a, b) => a.base - b.base).forEach(v => {
     if (v.base === 1 && !v.barre && v.frets.every(f => f === null || f <= 4) && v.frets.some(f => f === 0)) v.label = "Open";
     else v.label = (v.barre ? "Barre" : "Movable") + ", " + v.label + ", fret " + (v.base);
