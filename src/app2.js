@@ -65,12 +65,17 @@ function initKeys() {
 
 // ---- Trainer ----
 const PATTERNS = {
-  four:    { name: "Four downs  ↓ ↓ ↓ ↓", note: "The simplest one. A single strum on every beat.", s: ["D","","D","","D","","D",""] },
-  waltz:   { name: "Waltz  ↓ ↓ ↓", note: "Three beats to the bar. Good for waltzes and other songs in three.", s: ["D","","D","","D",""] },
-  dud:     { name: "Down, down-up  ↓ ↓↑ ↓↑ ↓↑", note: "A good next step once four downs feel easy.", s: ["D","","D","U","D","U","D","U"] },
-  folk:    { name: "Folk strum  ↓ ↓↑ ↑↓↑", note: "The classic. Keep your hand swinging down and up the whole time and just miss the strings where there is a gap.", s: ["D","","D","U","","U","D","U"] },
-  eighths: { name: "Steady eighths  ↓↑ ↓↑ ↓↑ ↓↑", note: "Constant down-up. Good for fast songs.", s: ["D","U","D","U","D","U","D","U"] },
-  offbeat: { name: "Offbeat  · ↑ · ↑ · ↑ · ↑", note: "Strum only on the 'and'. Gives a reggae feel.", s: ["","U","","U","","U","","U"] },
+  four:    { lvl: 1, name: "Four downs  ↓ ↓ ↓ ↓", note: "The simplest one. A single strum on every beat. Start here.", songs: "Achy Breaky Heart, lots of slow songs", s: ["D","","D","","D","","D",""] },
+  waltz:   { lvl: 1, name: "Waltz  ↓ ↓ ↓", note: "Three beats to the bar. Good for waltzes and other songs in three.", songs: "Silent Night", s: ["D","","D","","D",""] },
+  eights:  { lvl: 1, name: "Eight downs  ↓ ↓ ↓ ↓ ↓ ↓ ↓ ↓", note: "A down on every half beat, with your hand swinging up in between and missing the strings. Fast, so start slow.", songs: "Three Little Birds, Yellow, Blitzkrieg Bop", s: ["D","D","D","D","D","D","D","D"] },
+  rose:    { lvl: 2, name: "Four and a flick  ↓ ↓ ↓ ↓↑", note: "Four downs with one up at the very end of the bar. Good first step into adding ups.", songs: "Every Rose Has Its Thorn", s: ["D","","D","","D","","D","U"] },
+  dud:     { lvl: 2, name: "Down, down-up  ↓ ↓↑ ↓↑ ↓↑", note: "A good next step once four downs feel easy.", songs: "", s: ["D","","D","U","D","U","D","U"] },
+  eighths: { lvl: 2, name: "Steady eighths  ↓↑ ↓↑ ↓↑ ↓↑", note: "Constant down-up. Good for fast songs.", songs: "", s: ["D","U","D","U","D","U","D","U"] },
+  wtwo:    { lvl: 2, name: "Waltz with ups  ↓ ↓↑ ↓↑", note: "Three beats to the bar, with ups on beats 2 and 3.", songs: "Norwegian Wood, The Only Exception", s: ["D","","D","U","D","U"] },
+  ring:    { lvl: 3, name: "Gallop  ↓ ↓↑ ↓ ↓↑", note: "Down, down-up, down, down-up. Repeats twice a bar, so it feels like a horse trotting.", songs: "Ring of Fire, Sweet Home Alabama (verse)", s: ["D","","D","U","D","","D","U"] },
+  riptide: { lvl: 3, name: "Riptide verse  ↓ ↓ ↑↓↑", note: "Down on 1, down on 2, miss beat 3 and then up, down, up. Count 1 2 (3) & 4 & and keep your hand swinging the whole time. Listen to the song and adjust, as people play it a few ways.", songs: "Riptide (verse), Radioactive (verse), Take Me Home Country Road", s: ["D","","D","","","U","D","U"] },
+  folk:    { lvl: 3, name: "Folk strum  ↓ ↓↑ ↑↓↑", note: "The classic. Keep your hand swinging down and up the whole time and just miss the strings where there is a gap. If you only learn one, learn this one.", songs: "Brown Eyed Girl, Hotel California, Good Riddance, All of Me, Summer of 69, Riptide (chorus)", s: ["D","","D","U","","U","D","U"] },
+  offbeat: { lvl: 3, name: "Offbeat  · ↑ · ↑ · ↑ · ↑", note: "Strum only on the 'and'. Gives a reggae feel.", songs: "", s: ["","U","","U","","U","","U"] },
 };
 let running = false, timer = null, slot = 0, bar = 0, current = 0, audio = null;
 function slotsHTML(pat, active = -1, tap = false) {
@@ -114,7 +119,11 @@ function initTrainer() {
   ["c1t","c2t"].forEach(id => $(id).innerHTML = typeOptions(false));
   $("c1r").value = "G"; $("c2r").value = "D";
   $("pattern").innerHTML = Object.entries(PATTERNS).map(([k, p]) => `<option value="${k}">${p.name}</option>`).join("");
-  $("patterns").innerHTML = Object.values(PATTERNS).map(p => `<div class="pat"><h4>${p.name}</h4><p>${p.note}</p><div class="strum">${slotsHTML(p.s)}</div></div>`).join("");
+  $("patterns").innerHTML = [[1, "Start here"], [2, "Next step"], [3, "Harder"]].map(([l, t]) => `<h4 class="lib-group">${t}</h4>` + Object.entries(PATTERNS).filter(([, p]) => p.lvl === l).map(([k, p]) => `<div class="pat"><h4>${p.name}</h4><p>${p.note}</p>${p.songs ? `<p class="songs">Used in: ${p.songs}</p>` : ""}<div class="strum">${slotsHTML(p.s)}</div><button type="button" class="mini try" data-p="${k}">Try it in the trainer</button></div>`).join("")).join("");
+  $("patterns").addEventListener("click", e => {
+    const b = e.target.closest("button[data-p]"); if (!b) return;
+    $("pattern").value = b.dataset.p; $("pattern").dispatchEvent(new Event("change")); $("practice").scrollIntoView({ behavior: "smooth" });
+  });
   $("go").addEventListener("click", () => {
     if (running) { clearTimeout(timer); running = false; renderStrum(); $("go").textContent = "Start metronome"; $("count").textContent = "Stopped."; return; }
     try { audio = audio || new (window.AudioContext || window.webkitAudioContext)(); audio.resume(); } catch (e) { audio = null; }
