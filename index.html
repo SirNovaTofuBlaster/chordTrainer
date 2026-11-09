@@ -1286,6 +1286,32 @@ const PATTERNS = {
   folk:    { lvl: 3, name: "Folk strum  ↓ ↓↑ ↑↓↑", note: "The classic. Keep your hand swinging down and up the whole time and just miss the strings where there is a gap. If you only learn one, learn this one.", songs: "Brown Eyed Girl, Hotel California, Good Riddance, All of Me, Summer of 69, Riptide (chorus)", s: ["D","","D","U","","U","D","U"] },
   offbeat: { lvl: 3, name: "Offbeat  · ↑ · ↑ · ↑ · ↑", note: "Strum only on the 'and'. Gives a reggae feel.", songs: "", s: ["","U","","U","","U","","U"] },
 };
+// Extra patterns. The name's arrows are worked out from the pattern itself.
+function arrowName(title, s) {
+  const g = x => x === "D" ? "↓" : x === "U" ? "↑" : "";
+  const out = [];
+  for (let i = 0; i < s.length; i += 2) { const x = g(s[i]), y = g(s[i + 1]); out.push(!x && !y ? "·" : !x ? "·" + y : x + y); }
+  return title + "  " + out.join(" ");
+}
+const mk = (lvl, title, note, songs, s) => ({ lvl, name: arrowName(title, s), note, songs, s });
+const _ = "";
+Object.assign(PATTERNS, {
+  one:     mk(1, "One per bar", "A single down on beat 1 and let it ring. Good for very slow songs, and a gentle way to practise changing chords on time.", "", ["D",_,_,_,_,_,_,_]),
+  two:     mk(1, "Two per bar", "Down on 1 and on 3. Slow ballad feel.", "", ["D",_,_,_,"D",_,_,_]),
+  back:    mk(1, "Backbeat", "Strum only on beats 2 and 4, the way a snare drum does. Common in soul, reggae and pop.", "", [_,_,"D",_,_,_,"D",_]),
+  three:   mk(1, "Three and a rest", "Three downs and a gap on beat 4. A gap gives you time to change chord.", "", ["D",_,"D",_,"D",_,_,_]),
+  wdown:   mk(1, "Waltz eighths", "Three beats to the bar with a down-up on every beat. Count 1 and 2 and 3 and.", "", ["D","U","D","U","D","U"]),
+  twoon:   mk(2, "Two on, two off", "Down-up-down-up for two beats, then rest for two. Good for learning to stop your hand without losing the rhythm.", "", ["D","U","D","U",_,_,_,_]),
+  push:    mk(2, "Push strum", "Down on 1, down on 2, then an up that lands just before beat 4's down. It leans into the next beat.", "", ["D",_,"D",_,_,"U","D",_]),
+  tres:    mk(2, "3-3-2", "Strums land on beat 1, the 'and' of 2 and beat 4 (counting 1 and 2 AND 3 and 4). Gives a Latin, bouncy feel.", "", ["D",_,_,"D",_,_,"D",_]),
+  wflick:  mk(2, "Waltz and flick", "Downs on 1, 2 and 3 with an up at the end of the bar.", "", ["D",_,"D",_,"D","U"]),
+  hang:    mk(3, "Down then ups", "One strong down on 1, then three ups spread over the bar. Light and fast.", "", ["D",_,_,"U",_,"U",_,"U"]),
+  ballad:  mk(3, "Pop ballad", "The folk strum with the last up left out. Softer and a bit less busy.", "", ["D",_,"D","U",_,"U","D",_]),
+  syncop:  mk(3, "Syncopated", "A down on 1, then ups on the 'and' of 2, 3 and 4, and a down on the 4. Lots of gaps, so keep the hand moving.", "", ["D",_,_,"U",_,"U","D","U"]),
+  gaps:    mk(3, "Eighths with gaps", "Steady down-up, but you skip the downs on beats 2 and 4 and only play the ups.", "", ["D","U",_,"U","D","U",_,"U"]),
+  wpush:   mk(3, "Waltz folk", "The folk strum squeezed into three beats. Down, down-up, then an up.", "", ["D",_,"D","U",_,"U"]),
+});
+Object.entries(PATTERNS).sort((x, y) => x[1].lvl - y[1].lvl).forEach(([k, v]) => { delete PATTERNS[k]; PATTERNS[k] = v; });
 let running = false, timer = null, slot = 0, bar = 0, current = 0, audio = null;
 function slotsHTML(pat, active = -1, tap = false) {
   return pat.map((s, i) => {
