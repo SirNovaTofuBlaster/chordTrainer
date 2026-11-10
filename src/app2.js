@@ -148,7 +148,7 @@ function initTrainer() {
   $("patterns").innerHTML = [[1, "Start here"], [2, "Next step"], [3, "Harder"]].map(([l, t]) => `<h4 class="lib-group">${t}</h4>` + Object.entries(PATTERNS).filter(([, p]) => p.lvl === l).map(([k, p]) => `<div class="pat"><h4>${p.name}</h4><p>${p.note}</p>${p.songs ? `<p class="songs">Used in: ${p.songs}</p>` : ""}<div class="strum">${slotsHTML(p.s)}</div><button type="button" class="mini try" data-p="${k}">Try it in the trainer</button></div>`).join("")).join("");
   $("patterns").addEventListener("click", e => {
     const b = e.target.closest("button[data-p]"); if (!b) return;
-    $("pattern").value = b.dataset.p; $("pattern").dispatchEvent(new Event("change")); $("practice").scrollIntoView({ behavior: "smooth" });
+    $("pattern").value = b.dataset.p; $("pattern").dispatchEvent(new Event("change")); goTab("practice");
   });
   $("go").addEventListener("click", () => {
     if (running) { clearTimeout(timer); running = false; renderStrum(); $("go").textContent = "Start metronome"; $("count").textContent = "Stopped."; return; }

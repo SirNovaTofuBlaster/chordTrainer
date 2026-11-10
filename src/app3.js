@@ -116,7 +116,7 @@ function todaysPairs() {
 }
 function loadPair(p) {
   [["c1r", p[0]], ["c1t", p[1]], ["c2r", p[2]], ["c2t", p[3]]].forEach(([id, v]) => { $(id).value = v; $(id).dispatchEvent(new Event("change")); });
-  $("practice").scrollIntoView({ behavior: "smooth" });
+  goTab("practice");
 }
 function renderRoutine() {
   stopTimer();

@@ -107,7 +107,7 @@ function initStrum() {
   $("sb-use").addEventListener("click", () => {
     if (!sbEdit.id) saveCurrent(false);
     $("pattern").value = "my-" + sbEdit.id; $("pattern").dispatchEvent(new Event("change"));
-    $("practice").scrollIntoView({ behavior: "smooth" });
+    goTab("practice");
   });
 }
 initStrum();

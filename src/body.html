@@ -3,7 +3,7 @@
   <div class="wrap">
     <div class="brand">chord<span>Trainer</span></div>
     <nav class="jump" aria-label="Sections">
-      <a href="#chords">Chords</a><a href="#mine">My chords</a><a href="#exercises">Exercises</a><a href="#fretboard">Fretboard</a><a href="#keys">Keys</a><a href="#practice">Practice</a><a href="#songs">Songs</a><a href="#tuning">Tuning</a><a href="#reference">Reference</a>
+      <a href="#chords">Chords</a><a href="#mine">My chords</a><a href="#exercises">Exercises</a><a href="#drills">Drills</a><a href="#fretboard">Fretboard</a><a href="#keys">Keys</a><a href="#practice">Trainer</a><a href="#strumming">Strumming</a><a href="#songs">Songs</a><a href="#reference">Tuning</a>
     </nav>
     <div class="hand" role="group" aria-label="Which hand do you play with">
       <button id="hand-left" type="button" data-hand="left">Left<span class="hh">-handed</span></button>
@@ -24,7 +24,7 @@
 
 <div class="wrap">
 <main>
-  <section class="intro" aria-labelledby="intro-h">
+  <section class="intro" id="intro" aria-labelledby="intro-h">
     <div>
       <h1 id="intro-h">Chords, scales and practice for <em id="hand-word">left-handed</em> players.</h1>
       <p>Press the button at the top and every diagram on the page flips to suit you. Chord charts are drawn as if the guitar is standing up in front of you. Fretboards run the same way your neck does.</p>
@@ -57,8 +57,10 @@
       <div class="voicings" id="voicings"></div>
       <p class="legend"><b>o</b> play the string open · <b>x</b> don't play it · numbers on the left are fret numbers · dots show fingers (1 index, 2 middle, 3 ring, 4 pinky)</p>
     </div>
-    <h3 class="sub-h" id="all-h">Every chord on this note</h3>
-    <div class="grid" id="library"></div>
+    <details class="fold" id="lib-fold">
+      <summary><span class="sub-h" id="all-h">Every chord on this note</span><span class="muted fold-hint">show all</span></summary>
+      <div class="grid" id="library"></div>
+    </details>
   </section>
 
   <section id="mine" aria-labelledby="mine-h">
@@ -141,6 +143,35 @@
     <div class="exd-grid" id="ex-lib"></div>
     <h3 class="sub-h">Where this comes from</h3>
     <ul class="srcs" id="ex-src"></ul>
+  </section>
+
+  <section id="drills" aria-labelledby="drills-h">
+    <h2 id="drills-h">Drills</h2>
+    <p class="lede">Short games for the things that take longest to stick: strumming, knowing a chord when you see it, and finding notes on the neck.</p>
+    <div class="panel ladder">
+      <h3 class="sub-h">Strumming ladder</h3>
+      <p class="muted">Four patterns, in order. Stay on a step until it runs for a full minute at 60 BPM without losing the count, then tick it and move on.</p>
+      <ol class="ladder-list" id="ladder"></ol>
+    </div>
+    <div class="drill-grid">
+      <div class="panel drill">
+        <div class="drill-head"><h3 class="sub-h">Name the chord</h3>
+          <select id="q-pool" aria-label="Which chords to quiz"><option value="mine">My chords</option><option value="open">Beginner open chords</option><option value="majmin">All major and minor</option></select></div>
+        <div class="drill-art" id="q-art"></div>
+        <div class="drill-opts" id="q-opts"></div>
+        <p class="drill-msg" id="q-msg" role="status"></p>
+        <p class="muted" id="q-score"></p>
+      </div>
+      <div class="panel drill">
+        <div class="drill-head"><h3 class="sub-h">Find the note</h3>
+          <select id="n-range" aria-label="How far up the neck"><option value="3">Frets 0 to 3</option><option value="5">Frets 0 to 5</option><option value="12">Frets 0 to 12</option></select></div>
+        <p class="drill-q" id="n-q"></p>
+        <div class="drill-art" id="n-art"></div>
+        <div class="drill-opts notes" id="n-opts"></div>
+        <p class="drill-msg" id="n-msg" role="status"></p>
+        <p class="muted" id="n-score"></p>
+      </div>
+    </div>
   </section>
 
   <section id="fretboard" aria-labelledby="fb-h">
@@ -244,7 +275,11 @@
         <button class="btn" id="m-tap" type="button" disabled>Clean change</button>
       </div>
     </div>
-    <h3 class="sub-h">Strumming patterns</h3>
+  </section>
+
+  <section id="strumming" aria-labelledby="strum-h">
+    <h2 id="strum-h">Strumming patterns</h2>
+    <p class="lede">Every pattern, easiest first. Press "Try it in the trainer" on any of them to hear the click and see the boxes light up in time.</p>
     <div class="panel tips"><b>How to learn a pattern</b>
       <ol>
         <li>Count it out loud, "1 and 2 and 3 and 4 and", with no guitar.</li>
