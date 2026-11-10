@@ -13,7 +13,7 @@ function goTab(id, scroll = true) {
   if (location.hash !== "#" + id) history.replaceState(null, "", "#" + id);
   if (scroll) window.scrollTo(0, 0);
 }
-document.querySelectorAll("nav.jump a").forEach(a => a.addEventListener("click", e => { e.preventDefault(); goTab(a.getAttribute("href").slice(1)); }));
+document.querySelectorAll("nav.jump a, #home-link").forEach(a => a.addEventListener("click", e => { e.preventDefault(); goTab(a.getAttribute("href").slice(1)); }));
 window.addEventListener("hashchange", () => goTab(location.hash.slice(1)));
 let startTab = location.hash.slice(1);
 if (!startTab) { try { startTab = localStorage.getItem("ct-tab") || "chords"; } catch (e) { startTab = "chords"; } }
