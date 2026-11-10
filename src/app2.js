@@ -189,21 +189,21 @@ function initTrainer() {
 let mine = [{ root: "G", type: "maj", vi: 0 }, { root: "C", type: "maj", vi: 0 }, { root: "D", type: "maj", vi: 0 }, { root: "E", type: "min", vi: 0 }];
 try {
   const saved = JSON.parse(localStorage.getItem("ct-mine"));
-  if (Array.isArray(saved)) mine = saved.filter(c => c && ROOTS.includes(c.root) && TYPE[c.type]).map(c => ({ root: c.root, type: c.type, vi: +c.vi || 0 }));
+  if (Array.isArray(saved)) mine = saved.filter(c => c && ROOTS.includes(c.root) && TYPE[c.type]).map(c => ({ root: c.root, type: c.type, vi: +c.vi || 0, bass: typeof c.bass === "string" && ROOTS.concat(Object.values(ROOT_ALT), ["Cb","Fb","E#","B#"]).includes(c.bass) ? c.bass : "" }));
 } catch (e) {}
 const revealed = new Set();
 function saveMine() { try { localStorage.setItem("ct-mine", JSON.stringify(mine)); } catch (e) {} }
-function addMine(root, type) {
-  if (mine.some(c => c.root === root && c.type === type)) return false;
-  mine.push({ root, type, vi: 0 }); saveMine(); renderMine(); return true;
+function addMine(root, type, bass = "") {
+  if (mine.some(c => c.root === root && c.type === type && (c.bass || "") === bass)) return false;
+  mine.push({ root, type, vi: 0, bass }); saveMine(); renderMine(); return true;
 }
 function renderMine() {
   const mode = $("mine-mode").value;
   $("mine-empty").hidden = mine.length > 0;
   $("mine-count").textContent = mine.length ? mine.length + (mine.length === 1 ? " chord" : " chords") : "";
   $("mine-grid").innerHTML = mine.map((c, i) => {
-    const vs = chordVoicings(c.root, c.type), v = vs[c.vi % vs.length], nm = chordName(c.root, c.type);
-    const key = c.root + "|" + c.type, open = mode === "all" || revealed.has(key);
+    const vs = chordVoicings(c.root, c.type, c.bass), v = vs[c.vi % vs.length], nm = chordName(c.root, c.type, c.bass);
+    const key = c.root + "|" + c.type + "|" + (c.bass || ""), open = mode === "all" || revealed.has(key);
     const hideName = mode === "shape" && !open, hideShape = mode === "name" && !open;
     const notes = chordNotes(c.root, c.type).map(n => n.name).join(" ");
     return `<div class="mc" id="mc-${i}">
@@ -221,7 +221,7 @@ function initMine() {
   $("mine-quick").innerHTML = QUICK.map(([r, t]) => `<button type="button" class="chip" id="mq-${r}${t}" data-r="${r}" data-t="${t}">${chordName(r, t)}</button>`).join("");
   $("mine-quick").querySelectorAll("button").forEach(b => b.addEventListener("click", () => addMine(b.dataset.r, b.dataset.t)));
   $("mine-add").addEventListener("click", () => addMine($("mine-root").value, $("mine-type").value));
-  $("add-mine").addEventListener("click", () => { addMine(cRoot, cType); $("add-mine").textContent = "Added"; setTimeout(() => $("add-mine").textContent = "Add to my chords", 1200); });
+  $("add-mine").addEventListener("click", () => { addMine(cRoot, cType, cBass); $("add-mine").textContent = "Added"; setTimeout(() => $("add-mine").textContent = "Add to my chords", 1200); });
   $("mine-mode").addEventListener("change", () => { revealed.clear(); renderMine(); });
   $("mine-shuffle").addEventListener("click", () => {
     for (let i = mine.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [mine[i], mine[j]] = [mine[j], mine[i]]; }
@@ -233,7 +233,7 @@ function initMine() {
     const i = +b.dataset.i, c = mine[i];
     if (b.dataset.act === "rm") mine.splice(i, 1);
     else if (b.dataset.act === "alt") c.vi++;
-    else revealed.add(c.root + "|" + c.type);
+    else revealed.add(c.root + "|" + c.type + "|" + (c.bass || ""));
     saveMine(); renderMine();
   });
   renderMine();

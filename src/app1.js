@@ -41,7 +41,7 @@ function chordSVG(v, opts = {}) {
 const STRING_LETTERS = ["E","A","D","G","B","e"];
 
 // ---- Chord finder ----
-let cRoot = "G", cType = "maj";
+let cRoot = "G", cType = "maj", cBass = "";
 function renderRoots() {
   $("roots").innerHTML = ROOTS.map(r => `<button type="button" id="root-${r.replace("#", "s")}" data-root="${r}" aria-pressed="${r === cRoot}">${r}${ROOT_ALT[r] ? `<small>${ROOT_ALT[r]}</small>` : "<small>&nbsp;</small>"}</button>`).join("");
   $("roots").querySelectorAll("button").forEach(b => b.addEventListener("click", () => { cRoot = b.dataset.root; renderFinder(); }));
@@ -49,11 +49,16 @@ function renderRoots() {
 function renderFinder() {
   renderRoots();
   $("ctype").value = cType;
-  const vs = chordVoicings(cRoot, cType), name = chordName(cRoot, cType);
+  const bo = bassOptions(cRoot, cType);
+  if (cBass && !bo.some(o => pcOf(o.name) === pcOf(cBass))) cBass = "";
+  if (cBass) cBass = bo.find(o => pcOf(o.name) === pcOf(cBass)).name;
+  $("cbass").innerHTML = `<option value="">${cRoot} (normal)</option><optgroup label="Notes from the chord">` + bo.filter(o => o.tone).map(o => `<option value="${o.name}">${o.name}</option>`).join("") + `</optgroup><optgroup label="Other notes">` + bo.filter(o => !o.tone).map(o => `<option value="${o.name}">${o.name}</option>`).join("") + `</optgroup>`;
+  $("cbass").value = cBass;
+  const vs = chordVoicings(cRoot, cType, cBass), name = chordName(cRoot, cType, cBass);
   $("res-name").textContent = name;
-  $("res-type").textContent = cRoot + " " + TYPE[cType].name.toLowerCase();
+  $("res-type").textContent = cRoot + " " + TYPE[cType].name.toLowerCase() + (cBass ? ", with " + cBass + " as the lowest note" : "");
   $("res-notes").textContent = chordNotes(cRoot, cType).map(n => n.name).join(" ");
-  $("voicings").innerHTML = vs.map(v => `<div class="voicing">${chordSVG(v, { label: name })}<span class="vlabel">${esc(v.label)}</span></div>`).join("");
+  $("voicings").innerHTML = !vs.length ? `<p class="muted">No playable shape found for this one within a four-fret reach.</p>` : vs.map(v => `<div class="voicing">${chordSVG(v, { label: name })}<span class="vlabel">${esc(v.label)}</span></div>`).join("");
   $("all-h").textContent = "Every chord on " + cRoot;
   let lastG = "";
   $("library").innerHTML = CHORD_TYPES.map(t => {
@@ -68,8 +73,9 @@ function initFinder() {
   const quick = QUICK;
   $("ctype").innerHTML = typeOptions(true);
   $("ctype").addEventListener("change", e => { cType = e.target.value; renderFinder(); });
+  $("cbass").addEventListener("change", e => { cBass = e.target.value; renderFinder(); });
   $("quick").innerHTML = quick.map(([r, t]) => `<button type="button" class="chip" id="q-${r}${t}" data-r="${r}" data-t="${t}">${chordName(r, t)}</button>`).join("");
-  $("quick").querySelectorAll("button").forEach(b => b.addEventListener("click", () => { cRoot = b.dataset.r; cType = b.dataset.t; renderFinder(); }));
+  $("quick").querySelectorAll("button").forEach(b => b.addEventListener("click", () => { cRoot = b.dataset.r; cType = b.dataset.t; cBass = ""; renderFinder(); }));
 }
 
 // ---- Fretboard ----

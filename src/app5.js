@@ -58,20 +58,20 @@ let qCur = null, qRight = 0, qTotal = 0, qStreak = 0, qLock = false;
 function quizPool() {
   const mode = $("q-pool").value;
   if (mode === "majmin") return ROOTS.flatMap(r => [[r, "maj", 0], [r, "min", 0]]);
-  if (mode === "mine") { const m = mine.map(c => [c.root, c.type, c.vi || 0]); if (new Set(m.map(c => c[0] + c[1])).size >= 4) return m; }
+  if (mode === "mine") { const m = mine.filter(c => chordVoicings(c.root, c.type, c.bass).length).map(c => [c.root, c.type, c.vi || 0, c.bass || ""]); if (new Set(m.map(c => chordName(c[0], c[1], c[3]))).size >= 4) return m; }
   return QUICK.map(([r, t]) => [r, t, 0]);
 }
 function renderQuizArt() {
   if (!qCur) return;
-  const vs = chordVoicings(qCur[0], qCur[1]);
+  const vs = chordVoicings(qCur[0], qCur[1], qCur[3]);
   $("q-art").innerHTML = chordSVG(vs[qCur[2]] || vs[0], { label: "Mystery chord" });
 }
 function nextQuiz() {
   const pool = quizPool(); let c = pick(pool);
-  if (qCur && pool.length > 1) while (c[0] + c[1] === qCur[0] + qCur[1]) c = pick(pool);
+  if (qCur && pool.length > 1) while (chordName(c[0], c[1], c[3]) === chordName(qCur[0], qCur[1], qCur[3])) c = pick(pool);
   qCur = c; qLock = false; renderQuizArt();
-  const right = chordName(c[0], c[1]);
-  const others = [...new Set([...pool, ...QUICK.map(([r, t]) => [r, t, 0])].map(x => chordName(x[0], x[1])))].filter(n => n !== right);
+  const right = chordName(c[0], c[1], c[3]);
+  const others = [...new Set([...pool, ...QUICK.map(([r, t]) => [r, t, 0])].map(x => chordName(x[0], x[1], x[3])))].filter(n => n !== right);
   $("q-opts").innerHTML = shuffle([right, ...shuffle(others).slice(0, 3)]).map(n => `<button type="button" class="chip" data-n="${esc(n)}">${esc(n)}</button>`).join("");
   $("q-msg").textContent = "";
   if ($("q-pool").value === "mine" && new Set(mine.map(c => c.root + c.type)).size < 4) $("q-msg").textContent = "Add at least 4 chords to My chords to be quizzed on them. Using beginner chords for now.";
@@ -79,7 +79,7 @@ function nextQuiz() {
 function quizScore() { $("q-score").textContent = `${qRight} right out of ${qTotal} · streak ${qStreak} · best streak ${loadNum("ct-quiz-best")}`; }
 $("q-opts").addEventListener("click", e => {
   const b = e.target.closest("button[data-n]"); if (!b || qLock) return; qLock = true;
-  const right = chordName(qCur[0], qCur[1]), ok = b.dataset.n === right;
+  const right = chordName(qCur[0], qCur[1], qCur[3]), ok = b.dataset.n === right;
   qTotal++; if (ok) { qRight++; qStreak++; if (qStreak > loadNum("ct-quiz-best")) saveNum("ct-quiz-best", qStreak); } else qStreak = 0;
   $("q-opts").querySelectorAll("button").forEach(x => { x.disabled = true; if (x.dataset.n === right) x.setAttribute("aria-pressed", "true"); });
   $("q-msg").textContent = ok ? "Yes, " + right + "." : "Not quite. That one is " + right + ".";

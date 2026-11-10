@@ -548,6 +548,9 @@ body { margin: 0; }
       <label for="ctype" class="inline">Type
         <select id="ctype"></select>
       </label>
+      <label for="cbass" class="inline">Bass note
+        <select id="cbass"></select>
+      </label>
     </div>
     <div class="panel result">
       <div class="result-head">
@@ -873,10 +876,14 @@ const CHORD_TYPES = [
   T("Added notes", "madd9", "m(add9)", "Minor add 9", ["1","b3","5","9"]),
   T("Added notes", "add4", "add4", "Add 4", ["1","3","4","5"]),
   T("Added notes", "madd4", "m(add4)", "Minor add 4", ["1","b3","4","5"]),
+  T("Triads", "mb6", "m(b6)", "Minor flat 6", ["1","b3","5","b6"]),
+  T("Added notes", "add#11", "add#11", "Add sharp 11", ["1","3","5","#11"]),
   T("Sixths", "6", "6", "Major 6th", ["1","3","5","6"]),
   T("Sixths", "m6", "m6", "Minor 6th", ["1","b3","5","6"]),
   T("Sixths", "69", "6/9", "6/9", ["1","3","5","6","9"]),
   T("Sixths", "m69", "m6/9", "Minor 6/9", ["1","b3","5","6","9"]),
+  T("Sixths", "6sus4", "6sus4", "6th suspended 4th", ["1","4","5","6"]),
+  T("Sixths", "69#11", "6/9#11", "6/9 sharp 11", ["1","3","5","6","9","#11"]),
   T("Sevenths", "7", "7", "Dominant 7th", ["1","3","5","b7"]),
   T("Sevenths", "maj7", "maj7", "Major 7th", ["1","3","5","7"]),
   T("Sevenths", "m7", "m7", "Minor 7th", ["1","b3","5","b7"]),
@@ -892,6 +899,11 @@ const CHORD_TYPES = [
   T("Sevenths", "maj7b5", "maj7b5", "Major 7th flat 5", ["1","3","b5","7"]),
   T("Sevenths", "maj7#5", "maj7#5", "Major 7th sharp 5", ["1","3","#5","7"]),
   T("Sevenths", "maj7#11", "maj7#11", "Major 7th sharp 11", ["1","3","5","7","#11"]),
+  T("Sevenths", "maj7sus2", "maj7sus2", "Major 7th suspended 2nd", ["1","2","5","7"]),
+  T("Sevenths", "maj7sus4", "maj7sus4", "Major 7th suspended 4th", ["1","4","5","7"]),
+  T("Sevenths", "7add13", "7(add13)", "7th add 13", ["1","3","5","b7","13"]),
+  T("Sevenths", "maj7add13", "maj7(add13)", "Major 7th add 13", ["1","3","5","7","13"]),
+  T("Sevenths", "m7add11", "m7(add11)", "Minor 7th add 11", ["1","b3","5","b7","11"]),
   T("Ninths", "9", "9", "Dominant 9th", ["1","3","5","b7","9"]),
   T("Ninths", "maj9", "maj9", "Major 9th", ["1","3","5","7","9"]),
   T("Ninths", "m9", "m9", "Minor 9th", ["1","b3","5","b7","9"]),
@@ -901,6 +913,9 @@ const CHORD_TYPES = [
   T("Ninths", "9b5", "9b5", "9th flat 5", ["1","3","b5","b7","9"]),
   T("Ninths", "9#5", "9#5", "9th sharp 5", ["1","3","#5","b7","9"]),
   T("Ninths", "maj9#11", "maj9#11", "Major 9th sharp 11", ["1","3","5","7","9","#11"]),
+  T("Ninths", "maj9#5", "maj9#5", "Major 9th sharp 5", ["1","3","#5","7","9"]),
+  T("Ninths", "m7b9", "m7b9", "Minor 7th flat 9", ["1","b3","5","b7","b9"]),
+  T("Ninths", "dim9", "dim9", "Diminished 9th", ["1","b3","b5","bb7","9"]),
   T("Altered", "7b9", "7b9", "7th flat 9", ["1","3","5","b7","b9"]),
   T("Altered", "7#9", "7#9", "7th sharp 9 (the Hendrix chord)", ["1","3","5","b7","#9"]),
   T("Altered", "7b5b9", "7b5b9", "7th flat 5 flat 9", ["1","3","b5","b7","b9"]),
@@ -911,17 +926,25 @@ const CHORD_TYPES = [
   T("Altered", "7b13", "7b13", "7th flat 13", ["1","3","5","b7","b13"]),
   T("Altered", "7b9b13", "7b9b13", "7th flat 9 flat 13", ["1","3","b7","b9","b13"]),
   T("Altered", "7#9b13", "7#9b13", "7th sharp 9 flat 13", ["1","3","b7","#9","b13"]),
+  T("Altered", "7sus4b9", "7sus4b9", "7th suspended 4th flat 9", ["1","4","5","b7","b9"]),
+  T("Altered", "7b9#11", "7b9#11", "7th flat 9 sharp 11", ["1","3","5","b7","b9","#11"]),
+  T("Altered", "7#9#11", "7#9#11", "7th sharp 9 sharp 11", ["1","3","5","b7","#9","#11"]),
+  T("Altered", "maj7#9", "maj7#9", "Major 7th sharp 9", ["1","3","5","7","#9"]),
   T("Elevenths", "11", "11", "Dominant 11th", ["1","3","5","b7","9","11"]),
   T("Elevenths", "m11", "m11", "Minor 11th", ["1","b3","5","b7","9","11"]),
   T("Elevenths", "maj11", "maj11", "Major 11th", ["1","3","5","7","9","11"]),
   T("Elevenths", "7#11", "7#11", "7th sharp 11", ["1","3","5","b7","#11"]),
   T("Elevenths", "9#11", "9#11", "9th sharp 11", ["1","3","5","b7","9","#11"]),
+  T("Elevenths", "m11b5", "m11b5", "Half-diminished 11th", ["1","b3","b5","b7","9","11"]),
+  T("Elevenths", "mmaj11", "m(maj11)", "Minor major 11th", ["1","b3","5","7","9","11"]),
   T("Thirteenths", "13", "13", "Dominant 13th", ["1","3","5","b7","9","13"]),
   T("Thirteenths", "m13", "m13", "Minor 13th", ["1","b3","5","b7","9","13"]),
   T("Thirteenths", "maj13", "maj13", "Major 13th", ["1","3","5","7","9","13"]),
   T("Thirteenths", "13sus4", "13sus4", "13th suspended 4th", ["1","4","5","b7","9","13"]),
   T("Thirteenths", "13b9", "13b9", "13th flat 9", ["1","3","5","b7","b9","13"]),
   T("Thirteenths", "13#11", "13#11", "13th sharp 11", ["1","3","5","b7","9","#11","13"]),
+  T("Thirteenths", "maj13#11", "maj13#11", "Major 13th sharp 11", ["1","3","5","7","9","#11","13"]),
+  T("Thirteenths", "13b5", "13b5", "13th flat 5", ["1","3","b5","b7","9","13"]),
   T("Thirteenths", "13#9", "13#9", "13th sharp 9", ["1","3","5","b7","#9","13"]),
 ];
 const TYPE = Object.fromEntries(CHORD_TYPES.map(t => [t.id, t]));
@@ -974,15 +997,22 @@ function movable(shape, fret, label) {
   others.forEach(x => { fingers[x.i] = Math.min(n++, 4); });
   return { frets, fingers, barre, base: fret > 0 ? fret : 1, label };
 }
-function chordName(root, typeId) { return root + TYPE[typeId].sym; }
+function chordName(root, typeId, bass) { return root + TYPE[typeId].sym + (bass && pcOf(bass) !== pcOf(root) ? "/" + bass : ""); }
+// Bass notes you can put under a chord: its own notes first (inversions), then the rest.
+function bassOptions(root, typeId) {
+  const tones = chordNotes(root, typeId), rp = pcOf(root), out = [], seen = new Set([rp]);
+  tones.forEach(n => { if (!seen.has(n.pc)) { seen.add(n.pc); out.push({ name: n.name, tone: n.label }); } });
+  ROOTS.forEach(r => { const pc = pcOf(r); if (!seen.has(pc)) { seen.add(pc); out.push({ name: r, tone: null }); } });
+  return out;
+}
 function chordNotes(root, typeId) { return TYPE[typeId].f.map(l => ({ label: l, name: spell(root, l), pc: (pcOf(root) + parseLabel(l).semis) % 12 })); }
 
 
 // Voicings for chord types with no hand-picked shape: search every fingering inside a 4-fret window.
 const GEN_CACHE = {};
-function generatedVoicings(root, typeId) {
-  const key = root + "|" + typeId; if (GEN_CACHE[key]) return GEN_CACHE[key];
-  const f = TYPE[typeId].f, rp = pcOf(root);
+function generatedVoicings(root, typeId, bass) {
+  const key = root + "|" + typeId + "|" + (bass || ""); if (GEN_CACHE[key]) return GEN_CACHE[key];
+  const f = TYPE[typeId].f, rp = pcOf(root), bp = bass ? pcOf(bass) : rp;
   const semis = f.map(l => parseLabel(l).semis);
   const has = l => f.includes(l);
   const optional = new Set();
@@ -992,7 +1022,8 @@ function generatedVoicings(root, typeId) {
   if (has("#11") && has("13")) optional.add("9");
   const reqPc = f.filter(l => l !== "1" && !optional.has(l)).map(l => (rp + parseLabel(l).semis) % 12);
   const allowed = new Set(f.map(l => (rp + parseLabel(l).semis) % 12));
-  let needList = [rp, ...reqPc];
+  allowed.add(bp);
+  let needList = bp === rp ? [rp, ...reqPc] : [bp, rp, ...reqPc.filter(x => x !== bp)];
   let need = new Set(needList);
   const found = [];
   for (let attempt = 0; attempt < 3 && !found.length; attempt++) {
@@ -1014,7 +1045,8 @@ function generatedVoicings(root, typeId) {
       if (snd.length < 4) return null;
       const lo = snd[0], hi = snd[snd.length - 1];
       if (hi - lo + 1 !== snd.length || lo > 2) return null;
-      if ((STD_PC[lo] + fr[lo]) % 12 !== rp) return null;
+      if ((STD_PC[lo] + fr[lo]) % 12 !== bp) return null;
+      if (bp !== rp && snd.slice(1).some(i => (STD_PC[i] + fr[i]) % 12 === bp && !f.some(l => (rp + parseLabel(l).semis) % 12 === bp))) return null;
       const pcs = new Set(snd.map(i => (STD_PC[i] + fr[i]) % 12));
       for (const n of need) if (!pcs.has(n)) return null;
       const fretted = snd.filter(i => fr[i] > 0);
@@ -1023,7 +1055,8 @@ function generatedVoicings(root, typeId) {
       if (base > 0 && minF !== base && base > 1) return null;
       const atMin = fretted.filter(i => fr[i] === minF);
       let barre = null;
-      if (atMin.length >= 2) {
+      const openCount = snd.filter(i => fr[i] === 0).length;
+      if (atMin.length >= 2 && (openCount === 0 || fretted.length > 4)) {
         const a = Math.min(...atMin), b = Math.max(...atMin);
         const inside = snd.filter(i => i > a && i < b);
         if (inside.some(i => fr[i] < minF)) barre = null; else barre = { from: a, to: b, fret: minF };
@@ -1033,9 +1066,10 @@ function generatedVoicings(root, typeId) {
       const rest = fretted.filter(i => !(barre && fr[i] === minF)).sort((x, y) => fr[x] - fr[y] || x - y);
       if (rest.length + (barre ? 1 : 0) > 4) return null;
       rest.forEach(i => { fingers[i] = n++; });
-      if (!barre && atMin.length >= 2) { /* two notes on the same fret with no barre possible */ return null; }
+      if (!barre && fretted.length > 4) return null;
+      if (!barre && openCount === 0 && atMin.length >= 2) return null;
       const open = snd.filter(i => fr[i] === 0).length, muted = 6 - snd.length;
-      const score = (rest.length + (barre ? 1 : 0)) * 1.0 + muted * 0.5 - open * 0.6 - snd.length * 0.4 + minF * 0.12 + (maxF - minF) * 0.3;
+      const score = (rest.length + (barre ? 1 : 0)) * 1.0 + muted * 0.5 - open * 0.6 - snd.length * 0.4 + minF * 0.12 + (maxF - minF) * 0.3 + (open > 0 && maxF > 4 ? 2.5 : 0);
       return { frets: fr, fingers, barre, base: maxF <= 4 ? 1 : minF, score, open: open > 0 };
     };
     rec(0);
@@ -1051,7 +1085,28 @@ function generatedVoicings(root, typeId) {
   return GEN_CACHE[key] = out;
 }
 
-function chordVoicings(root, typeId) {
+const SLASH = {
+  "G|maj|B": [N,2,0,0,0,3], "G|maj|D": [N,N,0,0,0,3], "G|maj|F#": [2,N,0,0,0,3], "D|maj|F#": [2,0,0,2,3,2], "D|maj|A": [N,0,0,2,3,2], "D|maj|C": [N,3,0,2,3,2],
+  "C|maj|G": [3,3,2,0,1,0], "C|maj|E": [0,3,2,0,1,0], "C|maj|B": [N,2,2,0,1,0], "A|min|G": [3,0,2,2,1,0], "A|min|E": [0,0,2,2,1,0], "A|min|F#": [2,0,2,2,1,0],
+  "F|maj|C": [N,3,3,2,1,1], "F|maj|A": [N,0,3,2,1,1], "A|maj|E": [0,0,2,2,2,0], "A|maj|C#": [N,4,2,2,2,0], "E|maj|G#": [4,2,2,1,0,0], "E|maj|B": [N,2,2,1,0,0],
+  "E|min|B": [N,2,2,0,0,0], "D|min|C": [N,3,0,2,3,1], "D|min|F": [N,N,3,2,3,1], "D|min|A": [N,0,0,2,3,1], "B|min|A": [N,0,4,4,3,2],
+};
+function autoFinger(frets) {
+  const fretted = frets.map((f, i) => f > 0 ? i : -1).filter(i => i >= 0), fingers = Array(6).fill(0);
+  const minF = Math.min(...fretted.map(i => frets[i])), atMin = fretted.filter(i => frets[i] === minF);
+  let barre = null, n = 1;
+  if (fretted.length > 4 && atMin.length >= 2) { barre = { from: Math.min(...atMin), to: Math.max(...atMin), fret: minF }; atMin.forEach(i => fingers[i] = 1); n = 2; }
+  fretted.filter(i => !(barre && frets[i] === minF)).sort((a, b) => frets[a] - frets[b] || a - b).forEach(i => { fingers[i] = Math.min(n++, 4); });
+  return { frets, fingers, barre, base: 1, label: barre ? "Barre, fret " + minF : "Open" };
+}
+function chordVoicings(root, typeId, bass) {
+  if (bass && pcOf(bass) !== pcOf(root)) {
+    const key = Object.keys(SLASH).find(k => { const [r, ty, b] = k.split("|"); return ty === typeId && pcOf(r) === pcOf(root) && pcOf(b) === pcOf(bass); });
+    const gen = generatedVoicings(root, typeId, bass);
+    if (!key) return gen;
+    const first = autoFinger(SLASH[key]), k0 = first.frets.join(",");
+    return [first, ...gen.filter(v => v.frets.join(",") !== k0)].slice(0, 3);
+  }
   const out = [], seen = new Set(), pc = pcOf(root);
   const add = v => { const k = v.frets.join(","); if (!seen.has(k)) { seen.add(k); out.push(v); } };
   const o = OPEN[root + "|" + typeId];
@@ -1165,7 +1220,7 @@ const INTERVALS = [
   ["b5","Tritone","6"],["5","Perfect 5th","7"],["b6","Minor 6th","8"],["6","Major 6th","9"],["b7","Minor 7th","10"],["7","Major 7th","11"],
 ];
 
-if (false && typeof module !== "undefined") module.exports = { pcOf, spell, CHORD_TYPES, TYPE, ROOTS, chordVoicings, chordNotes, scaleNotes, SCALES, keyChords, TUNINGS, openFreq, STD_PC };
+if (false && typeof module !== "undefined") module.exports = { pcOf, spell, CHORD_TYPES, TYPE, ROOTS, chordVoicings, chordNotes, chordName, bassOptions, scaleNotes, SCALES, keyChords, TUNINGS, openFreq, STD_PC };
 
 // ---- UI helpers, chord diagrams, chord finder, fretboard ----
 let hand = "left";
@@ -1210,7 +1265,7 @@ function chordSVG(v, opts = {}) {
 const STRING_LETTERS = ["E","A","D","G","B","e"];
 
 // ---- Chord finder ----
-let cRoot = "G", cType = "maj";
+let cRoot = "G", cType = "maj", cBass = "";
 function renderRoots() {
   $("roots").innerHTML = ROOTS.map(r => `<button type="button" id="root-${r.replace("#", "s")}" data-root="${r}" aria-pressed="${r === cRoot}">${r}${ROOT_ALT[r] ? `<small>${ROOT_ALT[r]}</small>` : "<small>&nbsp;</small>"}</button>`).join("");
   $("roots").querySelectorAll("button").forEach(b => b.addEventListener("click", () => { cRoot = b.dataset.root; renderFinder(); }));
@@ -1218,11 +1273,16 @@ function renderRoots() {
 function renderFinder() {
   renderRoots();
   $("ctype").value = cType;
-  const vs = chordVoicings(cRoot, cType), name = chordName(cRoot, cType);
+  const bo = bassOptions(cRoot, cType);
+  if (cBass && !bo.some(o => pcOf(o.name) === pcOf(cBass))) cBass = "";
+  if (cBass) cBass = bo.find(o => pcOf(o.name) === pcOf(cBass)).name;
+  $("cbass").innerHTML = `<option value="">${cRoot} (normal)</option><optgroup label="Notes from the chord">` + bo.filter(o => o.tone).map(o => `<option value="${o.name}">${o.name}</option>`).join("") + `</optgroup><optgroup label="Other notes">` + bo.filter(o => !o.tone).map(o => `<option value="${o.name}">${o.name}</option>`).join("") + `</optgroup>`;
+  $("cbass").value = cBass;
+  const vs = chordVoicings(cRoot, cType, cBass), name = chordName(cRoot, cType, cBass);
   $("res-name").textContent = name;
-  $("res-type").textContent = cRoot + " " + TYPE[cType].name.toLowerCase();
+  $("res-type").textContent = cRoot + " " + TYPE[cType].name.toLowerCase() + (cBass ? ", with " + cBass + " as the lowest note" : "");
   $("res-notes").textContent = chordNotes(cRoot, cType).map(n => n.name).join(" ");
-  $("voicings").innerHTML = vs.map(v => `<div class="voicing">${chordSVG(v, { label: name })}<span class="vlabel">${esc(v.label)}</span></div>`).join("");
+  $("voicings").innerHTML = !vs.length ? `<p class="muted">No playable shape found for this one within a four-fret reach.</p>` : vs.map(v => `<div class="voicing">${chordSVG(v, { label: name })}<span class="vlabel">${esc(v.label)}</span></div>`).join("");
   $("all-h").textContent = "Every chord on " + cRoot;
   let lastG = "";
   $("library").innerHTML = CHORD_TYPES.map(t => {
@@ -1237,8 +1297,9 @@ function initFinder() {
   const quick = QUICK;
   $("ctype").innerHTML = typeOptions(true);
   $("ctype").addEventListener("change", e => { cType = e.target.value; renderFinder(); });
+  $("cbass").addEventListener("change", e => { cBass = e.target.value; renderFinder(); });
   $("quick").innerHTML = quick.map(([r, t]) => `<button type="button" class="chip" id="q-${r}${t}" data-r="${r}" data-t="${t}">${chordName(r, t)}</button>`).join("");
-  $("quick").querySelectorAll("button").forEach(b => b.addEventListener("click", () => { cRoot = b.dataset.r; cType = b.dataset.t; renderFinder(); }));
+  $("quick").querySelectorAll("button").forEach(b => b.addEventListener("click", () => { cRoot = b.dataset.r; cType = b.dataset.t; cBass = ""; renderFinder(); }));
 }
 
 // ---- Fretboard ----
@@ -1490,21 +1551,21 @@ function initTrainer() {
 let mine = [{ root: "G", type: "maj", vi: 0 }, { root: "C", type: "maj", vi: 0 }, { root: "D", type: "maj", vi: 0 }, { root: "E", type: "min", vi: 0 }];
 try {
   const saved = JSON.parse(localStorage.getItem("ct-mine"));
-  if (Array.isArray(saved)) mine = saved.filter(c => c && ROOTS.includes(c.root) && TYPE[c.type]).map(c => ({ root: c.root, type: c.type, vi: +c.vi || 0 }));
+  if (Array.isArray(saved)) mine = saved.filter(c => c && ROOTS.includes(c.root) && TYPE[c.type]).map(c => ({ root: c.root, type: c.type, vi: +c.vi || 0, bass: typeof c.bass === "string" && ROOTS.concat(Object.values(ROOT_ALT), ["Cb","Fb","E#","B#"]).includes(c.bass) ? c.bass : "" }));
 } catch (e) {}
 const revealed = new Set();
 function saveMine() { try { localStorage.setItem("ct-mine", JSON.stringify(mine)); } catch (e) {} }
-function addMine(root, type) {
-  if (mine.some(c => c.root === root && c.type === type)) return false;
-  mine.push({ root, type, vi: 0 }); saveMine(); renderMine(); return true;
+function addMine(root, type, bass = "") {
+  if (mine.some(c => c.root === root && c.type === type && (c.bass || "") === bass)) return false;
+  mine.push({ root, type, vi: 0, bass }); saveMine(); renderMine(); return true;
 }
 function renderMine() {
   const mode = $("mine-mode").value;
   $("mine-empty").hidden = mine.length > 0;
   $("mine-count").textContent = mine.length ? mine.length + (mine.length === 1 ? " chord" : " chords") : "";
   $("mine-grid").innerHTML = mine.map((c, i) => {
-    const vs = chordVoicings(c.root, c.type), v = vs[c.vi % vs.length], nm = chordName(c.root, c.type);
-    const key = c.root + "|" + c.type, open = mode === "all" || revealed.has(key);
+    const vs = chordVoicings(c.root, c.type, c.bass), v = vs[c.vi % vs.length], nm = chordName(c.root, c.type, c.bass);
+    const key = c.root + "|" + c.type + "|" + (c.bass || ""), open = mode === "all" || revealed.has(key);
     const hideName = mode === "shape" && !open, hideShape = mode === "name" && !open;
     const notes = chordNotes(c.root, c.type).map(n => n.name).join(" ");
     return `<div class="mc" id="mc-${i}">
@@ -1522,7 +1583,7 @@ function initMine() {
   $("mine-quick").innerHTML = QUICK.map(([r, t]) => `<button type="button" class="chip" id="mq-${r}${t}" data-r="${r}" data-t="${t}">${chordName(r, t)}</button>`).join("");
   $("mine-quick").querySelectorAll("button").forEach(b => b.addEventListener("click", () => addMine(b.dataset.r, b.dataset.t)));
   $("mine-add").addEventListener("click", () => addMine($("mine-root").value, $("mine-type").value));
-  $("add-mine").addEventListener("click", () => { addMine(cRoot, cType); $("add-mine").textContent = "Added"; setTimeout(() => $("add-mine").textContent = "Add to my chords", 1200); });
+  $("add-mine").addEventListener("click", () => { addMine(cRoot, cType, cBass); $("add-mine").textContent = "Added"; setTimeout(() => $("add-mine").textContent = "Add to my chords", 1200); });
   $("mine-mode").addEventListener("change", () => { revealed.clear(); renderMine(); });
   $("mine-shuffle").addEventListener("click", () => {
     for (let i = mine.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [mine[i], mine[j]] = [mine[j], mine[i]]; }
@@ -1534,7 +1595,7 @@ function initMine() {
     const i = +b.dataset.i, c = mine[i];
     if (b.dataset.act === "rm") mine.splice(i, 1);
     else if (b.dataset.act === "alt") c.vi++;
-    else revealed.add(c.root + "|" + c.type);
+    else revealed.add(c.root + "|" + c.type + "|" + (c.bass || ""));
     saveMine(); renderMine();
   });
   renderMine();
@@ -1957,20 +2018,20 @@ let qCur = null, qRight = 0, qTotal = 0, qStreak = 0, qLock = false;
 function quizPool() {
   const mode = $("q-pool").value;
   if (mode === "majmin") return ROOTS.flatMap(r => [[r, "maj", 0], [r, "min", 0]]);
-  if (mode === "mine") { const m = mine.map(c => [c.root, c.type, c.vi || 0]); if (new Set(m.map(c => c[0] + c[1])).size >= 4) return m; }
+  if (mode === "mine") { const m = mine.filter(c => chordVoicings(c.root, c.type, c.bass).length).map(c => [c.root, c.type, c.vi || 0, c.bass || ""]); if (new Set(m.map(c => chordName(c[0], c[1], c[3]))).size >= 4) return m; }
   return QUICK.map(([r, t]) => [r, t, 0]);
 }
 function renderQuizArt() {
   if (!qCur) return;
-  const vs = chordVoicings(qCur[0], qCur[1]);
+  const vs = chordVoicings(qCur[0], qCur[1], qCur[3]);
   $("q-art").innerHTML = chordSVG(vs[qCur[2]] || vs[0], { label: "Mystery chord" });
 }
 function nextQuiz() {
   const pool = quizPool(); let c = pick(pool);
-  if (qCur && pool.length > 1) while (c[0] + c[1] === qCur[0] + qCur[1]) c = pick(pool);
+  if (qCur && pool.length > 1) while (chordName(c[0], c[1], c[3]) === chordName(qCur[0], qCur[1], qCur[3])) c = pick(pool);
   qCur = c; qLock = false; renderQuizArt();
-  const right = chordName(c[0], c[1]);
-  const others = [...new Set([...pool, ...QUICK.map(([r, t]) => [r, t, 0])].map(x => chordName(x[0], x[1])))].filter(n => n !== right);
+  const right = chordName(c[0], c[1], c[3]);
+  const others = [...new Set([...pool, ...QUICK.map(([r, t]) => [r, t, 0])].map(x => chordName(x[0], x[1], x[3])))].filter(n => n !== right);
   $("q-opts").innerHTML = shuffle([right, ...shuffle(others).slice(0, 3)]).map(n => `<button type="button" class="chip" data-n="${esc(n)}">${esc(n)}</button>`).join("");
   $("q-msg").textContent = "";
   if ($("q-pool").value === "mine" && new Set(mine.map(c => c.root + c.type)).size < 4) $("q-msg").textContent = "Add at least 4 chords to My chords to be quizzed on them. Using beginner chords for now.";
@@ -1978,7 +2039,7 @@ function nextQuiz() {
 function quizScore() { $("q-score").textContent = `${qRight} right out of ${qTotal} · streak ${qStreak} · best streak ${loadNum("ct-quiz-best")}`; }
 $("q-opts").addEventListener("click", e => {
   const b = e.target.closest("button[data-n]"); if (!b || qLock) return; qLock = true;
-  const right = chordName(qCur[0], qCur[1]), ok = b.dataset.n === right;
+  const right = chordName(qCur[0], qCur[1], qCur[3]), ok = b.dataset.n === right;
   qTotal++; if (ok) { qRight++; qStreak++; if (qStreak > loadNum("ct-quiz-best")) saveNum("ct-quiz-best", qStreak); } else qStreak = 0;
   $("q-opts").querySelectorAll("button").forEach(x => { x.disabled = true; if (x.dataset.n === right) x.setAttribute("aria-pressed", "true"); });
   $("q-msg").textContent = ok ? "Yes, " + right + "." : "Not quite. That one is " + right + ".";
