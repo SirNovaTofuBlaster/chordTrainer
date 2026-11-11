@@ -9,6 +9,7 @@ Guitar chords, scales and practice tools, with a left-handed and right-handed sw
 - Chord change trainer with a metronome
 - Chords: 83 chord types, each with diagrams for all 12 roots, plus slash chords (any chord over any bass note)
 - Tabs: each section opens on its own instead of one long page
+- Spider exercise in the Trainer tab: steps through every finger and string with a click
 - Drills: strumming ladder, name-the-chord quiz, find-the-note quiz
 - Daily exercises: a 20-minute routine with timers, a streak counter and ten beginner chord exercises
 - Strumming patterns: save your own patterns on the My chords page, make variations, and send them to the trainer

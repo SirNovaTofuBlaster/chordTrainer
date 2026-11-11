@@ -9,6 +9,7 @@ function goTab(id, scroll = true) {
     const on = a.getAttribute("href") === "#" + id;
     if (on) { a.setAttribute("aria-current", "page"); a.scrollIntoView({ block: "nearest", inline: "center" }); } else a.removeAttribute("aria-current");
   });
+  if (typeof stopSpider === "function") stopSpider();
   try { localStorage.setItem("ct-tab", id); } catch (e) {}
   if (location.hash !== "#" + id) history.replaceState(null, "", "#" + id);
   if (scroll) window.scrollTo(0, 0);
@@ -115,3 +116,67 @@ $("n-opts").addEventListener("click", e => {
 $("n-range").addEventListener("change", nextNote);
 document.querySelectorAll("button[data-hand]").forEach(b => b.addEventListener("click", () => { renderQuizArt(); renderNoteArt(); }));
 renderLadder(); nextQuiz(); quizScore(); nextNote(); noteScore();
+
+// ---- Spider exercise ----
+var spTimer = null;
+const SPIDER_ORDERS = [["1 2 3 4", [1, 2, 3, 4]], ["4 3 2 1", [4, 3, 2, 1]], ["1 3 2 4", [1, 3, 2, 4]], ["1 2 4 3", [1, 2, 4, 3]], ["2 1 4 3", [2, 1, 4, 3]], ["1 4 2 3", [1, 4, 2, 3]]];
+let spSeq = [], spIdx = 0, spCtx = null;
+$("sp-fret").innerHTML = Array.from({ length: 9 }, (_, i) => `<option value="${i + 1}">Frets ${i + 1} to ${i + 4}</option>`).join("");
+$("sp-order").innerHTML = SPIDER_ORDERS.map(([n], i) => `<option value="${i}">${n}</option>`).join("");
+function spiderSeq() {
+  const start = +$("sp-fret").value, order = SPIDER_ORDERS[+$("sp-order").value][1], strs = [0, 1, 2, 3, 4, 5];
+  if ($("sp-dir").value === "back") strs.push(...[4, 3, 2, 1, 0]);
+  return strs.flatMap(s => order.map(f => ({ s, fret: start + f - 1, finger: f })));
+}
+function spiderSVG(cur) {
+  const start = +$("sp-fret").value, W = 190, top = 34, left = 40, gap = 22, fh = 30, rows = 4, H = top + fh * rows + 24;
+  const x = i => left + gap * (hand === "left" ? 5 - i : i);
+  let s = `<svg class="chord spider-svg" viewBox="0 0 ${W} ${H}" role="img" aria-label="Spider exercise diagram, ${hand}-handed">`;
+  for (let i = 0; i < 6; i++) s += `<line class="grid-line" x1="${x(i)}" y1="${top}" x2="${x(i)}" y2="${top + fh * rows}"/>`;
+  for (let r = 1; r <= rows; r++) s += `<line class="grid-line" x1="${left}" y1="${top + fh * r}" x2="${left + gap * 5}" y2="${top + fh * r}"/>`;
+  s += start === 1 ? `<line class="nut" x1="${left - 1}" y1="${top}" x2="${left + gap * 5 + 1}" y2="${top}"/>` : `<line class="grid-line" x1="${left}" y1="${top}" x2="${left + gap * 5}" y2="${top}"/>`;
+  for (let r = 0; r < rows; r++) s += `<text class="fret-no" x="${left - 14}" y="${top + fh * r + fh / 2 + 3}" text-anchor="middle">${start + r}</text>`;
+  for (let i = 0; i < 6; i++) for (let r = 0; r < rows; r++) s += `<circle class="spd-ghost" cx="${x(i)}" cy="${top + fh * r + fh / 2}" r="7"/>`;
+  if (cur) {
+    const cy = top + fh * (cur.fret - start) + fh / 2;
+    s += `<circle class="dot" cx="${x(cur.s)}" cy="${cy}" r="10"/><text class="fnum" x="${x(cur.s)}" y="${cy + 4}" text-anchor="middle">${cur.finger}</text>`;
+  }
+  STRING_LETTERS.forEach((n, i) => { s += `<text class="sname${cur && cur.s === i ? " cur" : ""}" x="${x(i)}" y="${top + fh * rows + 16}" text-anchor="middle">${n}</text>`; });
+  return s + `</svg>`;
+}
+function renderSpider() {
+  const cur = spTimer && spSeq[spIdx] ? spSeq[spIdx] : null;
+  $("sp-art").innerHTML = spiderSVG(cur);
+  const order = SPIDER_ORDERS[+$("sp-order").value][1];
+  if (cur) {
+    $("sp-now").textContent = `${STRING_WORDS[cur.s][0].toUpperCase() + STRING_WORDS[cur.s].slice(1)} string · fret ${cur.fret} · finger ${cur.finger}`;
+    const base = Math.floor(spIdx / 4) * 4;
+    $("sp-steps").innerHTML = order.map((f, i) => `<span class="${base + i === spIdx ? "on" : ""}">${f}</span>`).join("");
+    $("sp-count").textContent = `Note ${spIdx + 1} of ${spSeq.length}`;
+  } else { $("sp-steps").innerHTML = order.map(f => `<span>${f}</span>`).join(""); }
+}
+function spiderTick() {
+  renderSpider();
+  const cur = spSeq[spIdx];
+  if (spCtx) {
+    const o = spCtx.createOscillator(), g = spCtx.createGain(), t = spCtx.currentTime, first = spIdx % 4 === 0;
+    o.frequency.value = first ? 1500 : 1000; g.gain.setValueAtTime(first ? 0.3 : 0.15, t); g.gain.exponentialRampToValueAtTime(0.001, t + 0.05);
+    o.connect(g).connect(spCtx.destination); o.start(t); o.stop(t + 0.06);
+  }
+  spIdx = (spIdx + 1) % spSeq.length;
+  spTimer = setTimeout(spiderTick, 60000 / +$("sp-bpm").value);
+}
+function stopSpider() {
+  if (!spTimer) return;
+  clearTimeout(spTimer); spTimer = null; spIdx = 0;
+  $("sp-go").textContent = "Start spider"; $("sp-now").textContent = "Stopped. Press start to go again."; $("sp-count").textContent = "";
+  renderSpider();
+}
+$("sp-go").addEventListener("click", () => {
+  if (spTimer) { stopSpider(); return; }
+  try { spCtx = spCtx || new (window.AudioContext || window.webkitAudioContext)(); spCtx.resume(); } catch (e) { spCtx = null; }
+  spSeq = spiderSeq(); spIdx = 0; $("sp-go").textContent = "Stop"; spiderTick();
+});
+["sp-fret", "sp-order", "sp-dir"].forEach(id => $(id).addEventListener("change", () => { if (spTimer) { clearTimeout(spTimer); spTimer = null; spSeq = spiderSeq(); spIdx = 0; spTimer = 1; spiderTick(); } else renderSpider(); }));
+document.querySelectorAll("button[data-hand]").forEach(b => b.addEventListener("click", renderSpider));
+renderSpider();

@@ -278,6 +278,34 @@
         <button class="btn" id="m-tap" type="button" disabled>Clean change</button>
       </div>
     </div>
+    <div class="panel spider" id="spider">
+      <div class="sp-text">
+        <h3>Spider exercise</h3>
+        <p>Put your fingers 1, 2, 3 and 4 on four frets in a row, one finger per fret. Play one note with each finger in order, then move to the next string, all the way across and back. It builds finger independence, which is what makes chord changes (especially to C) feel easier.</p>
+        <ul class="sp-tips">
+          <li>Start at 60 BPM, one note per click.</li>
+          <li>Keep your fingers curved and close to the fret wire.</li>
+          <li>Raise the speed 5 BPM only when a full pass is clean.</li>
+        </ul>
+        <div class="sp-controls">
+          <label for="sp-fret">Position
+            <select id="sp-fret"></select></label>
+          <label for="sp-order">Finger order
+            <select id="sp-order"></select></label>
+          <label for="sp-dir">Strings
+            <select id="sp-dir"><option value="back">Across and back</option><option value="up">Low to high only</option></select></label>
+          <label for="sp-bpm">Speed
+            <select id="sp-bpm"><option value="40">40 BPM</option><option value="50">50 BPM</option><option value="60" selected>60 BPM</option><option value="70">70 BPM</option><option value="80">80 BPM</option><option value="100">100 BPM</option><option value="120">120 BPM</option></select></label>
+        </div>
+        <button class="btn" id="sp-go" type="button">Start spider</button>
+      </div>
+      <div class="sp-stage">
+        <div id="sp-art"></div>
+        <p class="sp-now" id="sp-now">Press start. You will hear one click per note.</p>
+        <div class="sp-steps" id="sp-steps" aria-hidden="true"></div>
+        <p class="muted sp-count" id="sp-count"></p>
+      </div>
+    </div>
   </section>
 
   <section id="strumming" aria-labelledby="strum-h">

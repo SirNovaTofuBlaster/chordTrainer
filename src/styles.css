@@ -482,3 +482,22 @@ html { -webkit-tap-highlight-color: transparent; }
   .drill-opts .chip { min-width: 72px; }
   .drill-opts.notes .chip { min-width: 56px; }
 }
+
+/* spider exercise */
+.spider { margin-top: 16px; display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: 20px; align-items: start; }
+.sp-text h3 { margin: 0 0 6px; }
+.sp-text p { margin: 0 0 8px; }
+.sp-tips { margin: 0 0 12px; padding-left: 20px; }
+.sp-controls { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 14px; }
+.sp-controls label { display: grid; gap: 4px; font-size: .85rem; }
+.sp-stage { display: grid; justify-items: center; gap: 8px; }
+.sp-stage svg { max-width: 230px; }
+.sp-now { margin: 0; font-weight: 700; text-align: center; min-height: 1.5em; }
+.sp-steps { display: flex; gap: 8px; }
+.sp-steps span { width: 34px; height: 34px; border-radius: 50%; border: 1px solid var(--line); display: grid; place-items: center; font: 700 1rem var(--mono); color: var(--muted); }
+.sp-steps span.on { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+.sp-count { margin: 0; font-size: .85rem; }
+svg.chord .spd-ghost { fill: var(--surface); stroke: var(--line); stroke-width: 1.5; }
+svg.chord .sname.cur { fill: var(--accent); font-weight: 700; }
+@media (max-width: 760px) { .spider { grid-template-columns: minmax(0, 1fr); } .sp-stage { order: -1; } }
+@media (pointer: coarse) { .sp-steps span { width: 40px; height: 40px; } .sp-controls select { min-height: 44px; } }
