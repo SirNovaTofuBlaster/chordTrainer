@@ -3,7 +3,7 @@
   <div class="wrap">
     <a class="brand" id="home-link" href="#chords" aria-label="chordTrainer home">chord<span>Trainer</span></a>
     <nav class="jump" aria-label="Sections">
-      <a href="#chords">Chords</a><a href="#mine">My chords</a><a href="#exercises">Exercises</a><a href="#drills">Drills</a><a href="#fretboard">Fretboard</a><a href="#keys">Keys</a><a href="#practice">Trainer</a><a href="#strumming">Strumming</a><a href="#songs">Songs</a><a href="#reference">Tuning</a>
+      <a href="#chords">Chords</a><a href="#mine">My chords</a><a href="#exercises">Exercises</a><a href="#drills">Drills</a><a href="#pentatonics">Pentatonics</a><a href="#fretboard">Fretboard</a><a href="#keys">Keys</a><a href="#practice">Trainer</a><a href="#strumming">Strumming</a><a href="#songs">Songs</a><a href="#reference">Tuning</a>
     </nav>
     <div class="hand" role="group" aria-label="Which hand do you play with">
       <button id="hand-left" type="button" data-hand="left">Left<span class="hh">-handed</span></button>
@@ -175,6 +175,102 @@
         <p class="muted" id="n-score"></p>
       </div>
     </div>
+  </section>
+
+  <section id="pentatonics" aria-labelledby="pt-h">
+    <h2 id="pt-h">Pentatonic scales</h2>
+    <p class="lede">A pentatonic scale has only five notes per octave, which is why it is the scale most guitarists learn first for solos. Pick a key below to see the five boxes, then follow the order the guides recommend.</p>
+
+    <div class="panel pt-pick">
+      <label for="pt-root">Key <select id="pt-root"></select></label>
+      <label for="pt-kind">Scale <select id="pt-kind"><option value="minor">Minor pentatonic</option><option value="major">Major pentatonic</option></select></label>
+      <label for="pt-label">Show on the dots <select id="pt-label"><option value="notes">Note names</option><option value="degrees">Scale numbers (1, b3, 4...)</option><option value="none">Nothing</option></select></label>
+    </div>
+    <div class="panel pt-notes" id="pt-notes" role="status"></div>
+    <div class="pt-grid" id="pt-grid"></div>
+    <p class="muted pt-legend">The coloured dot is the root. Dots on the left or right follow your hand switch. A "0" above the nut means that string is played open. Each box has exactly two notes on every string.</p>
+    <p class="muted pt-legend" id="pt-same"></p>
+    <button class="btn small ghost" id="pt-neck" type="button">Show this scale on the whole neck</button>
+
+    <h3 class="sub-h">How to learn it</h3>
+    <p class="muted">Everything here comes from the guides listed at the bottom. The name in brackets is where each tip is from.</p>
+    <ol class="pt-steps">
+      <li><b>Learn Box 1 first, then Box 2.</b> "Pattern 1 comes first" and Pattern 2 "should be the second shape you learn". <span class="src">JustinGuitar</span></li>
+      <li><b>Go slowly.</b> Play a pattern perfectly at a very slow speed, about 10 times, before speeding up, so you don't build habits you'll have to fix later. <span class="src">JustinGuitar</span></li>
+      <li><b>Use your fingertips.</b> Don't let your fingers fold, and don't barre. <span class="src">JustinGuitar</span></li>
+      <li><b>Learn where the root is.</b> Learn the root notes on the 6th and 5th strings, and practise one shape with its root on the 6th string and one with its root on the 5th. <span class="src">Yousician</span></li>
+      <li><b>Train your ear on the root.</b> Start on the lowest root, play up as far as you can, come back down as low as you can, then return to the root. <span class="src">JustinGuitar</span></li>
+      <li><b>One shape at a time.</b> Get a shape under your fingers until you don't have to look at the chart. Then learn the shape before or after it to see how the notes link up. <span class="src">JG Music Lessons</span></li>
+      <li><b>Make music with one shape</b> before you master all five. <span class="src">JustinGuitar</span></li>
+      <li><b>Don't get stuck in one box.</b> Learn how the positions connect, then make phrases that move between them. Practise with a metronome or a backing track. <span class="src">Guitar River</span></li>
+      <li><b>If Box 1 feels like a stretch,</b> that is normal for beginners. You can use your ring finger instead of your little finger on the top notes of the first and second strings, especially higher up the neck. <span class="src">Guitar River, JustinGuitar</span></li>
+      <li><b>Spot the repeats.</b> The notes on the first and sixth strings are always the same in every box. <span class="src">JG Music Lessons</span></li>
+    </ol>
+
+    <h3 class="sub-h" id="pt-ex-h">Exercises</h3>
+    <p class="muted">Exercise 1 is a step-by-step player for the box you picked above. The other exercises are the practice ideas from the guides, with the guide named on each.</p>
+
+    <div class="panel pt-play">
+      <h4>1. Play the box, note by note</h4>
+      <p class="muted">Press each lit circle and pick just that string. This is the same run as the Rocksmith tip: play from the low E string to the high e string, then back again. Use the key and scale you chose above.</p>
+      <div class="pt-pick">
+        <label for="pp-box">Box <select id="pp-box"><option value="0">Box 1</option><option value="1">Box 2</option><option value="2">Box 3</option><option value="3">Box 4</option><option value="4">Box 5</option></select></label>
+        <label for="pp-dir">Direction <select id="pp-dir"><option value="both">Up, then down</option><option value="up">Up only</option><option value="down">Down only</option></select></label>
+        <label for="pp-bpm">Speed <select id="pp-bpm"><option value="40">Very slow (40)</option><option value="60" selected>Slow (60)</option><option value="80">Medium (80)</option><option value="100">Faster (100)</option></select></label>
+      </div>
+      <div class="pt-play-row">
+        <div id="pp-art" class="pt-play-art"></div>
+        <div class="pt-play-info">
+          <div id="pp-now" class="pt-now" aria-live="polite">Press Start, or use Next note.</div>
+          <pre id="pp-tab" class="pt-tab" aria-label="Tab of this box"></pre>
+          <p class="muted pt-legend">Tab is a text version of the same notes. Each line is a string, with the thinnest string (high e) on the top line. The number is the fret.</p>
+          <div class="pt-btns">
+            <button class="btn" id="pp-go" type="button">Start</button>
+            <button class="btn small ghost" id="pp-step" type="button">Next note</button>
+            <button class="btn small ghost" id="pp-reset" type="button">Back to start</button>
+            <label class="pt-click"><input type="checkbox" id="pp-sound" checked> Click</label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <ol class="pt-steps pt-ex" start="2">
+      <li><b>Find your root.</b> Put your first finger on fret 3 of the thickest (6th) string for G minor pentatonic, or fret 8 for C minor pentatonic. Fret 5 on the same string is A, the note A minor starts on. <span class="src">JustinGuitar, Rocksmith</span></li>
+      <li><b>Ten clean runs.</b> Play the box perfectly at a very slow speed 10 times, then speed up a little. <span class="src">JustinGuitar</span></li>
+      <li><b>Root-to-root ear run.</b> Start on the lowest root note, play up as far as you can, come back down as low as you can, then go up to the root again. <span class="src">JustinGuitar</span></li>
+      <li><b>Clean and accurate.</b> Run the box from the low E string up to the high e string and back. Focus on putting each finger down cleanly. <span class="src">Rocksmith</span></li>
+      <li><b>Change the rhythm.</b> Start with a steady rhythm, then try different timings and rhythm patterns. <span class="src">Rocksmith</span></li>
+      <li><b>Use a metronome.</b> Start slow and gradually raise the tempo over time. <span class="src">Rocksmith</span></li>
+      <li><b>Play along with music.</b> Try the scale over backing tracks in different styles and keys, and over songs you know. <span class="src">Rocksmith</span></li>
+      <li><b>Mix major and minor.</b> Once you know both, switch between the two scales to hear the difference. <span class="src">Rocksmith</span></li>
+      <li><b>Later: add techniques.</b> Once the box feels comfortable you can add slides, hammer-ons and pull-offs. <span class="src">Rocksmith</span></li>
+      <li><b>Then the next box.</b> After the first position, learn the other positions to cover the whole neck. <span class="src">Rocksmith</span></li>
+    </ol>
+
+    <h3 class="sub-h">Major, minor and the blues note</h3>
+    <ul class="pt-steps plain">
+      <li>The major pentatonic is 1, 2, 3, 5, 6. The minor pentatonic is 1, b3, 4, 5, b7. <span class="src">Music Gurus, Yamaha</span></li>
+      <li>C major pentatonic and A minor pentatonic have exactly the same notes. Only the root is different, so the two sound different. <span class="src">Music Gurus</span></li>
+      <li>Because of that, the major pentatonic uses the same shapes as the minor one. Major Box 1 is the same shape as minor Box 2, major Box 2 is minor Box 3, and so on. <span class="src">JustinGuitar forum</span></li>
+      <li>Try playing a few notes of G minor pentatonic and then switching to G major pentatonic. Listen to how the root changes the sound. <span class="src">Yousician, Music Gurus</span></li>
+      <li>The blues scale is the minor pentatonic with one added note, the flat 5. <span class="src">Yamaha</span></li>
+    </ul>
+
+    <details class="fold" id="pt-sources">
+      <summary><span class="sub-h">Sources and what I could check</span></summary>
+      <ul class="pt-src">
+        <li><a href="https://justinguitar.com/guitar-lessons/minor-pentatonic-the-5-patterns-sc-304" rel="noopener">JustinGuitar: Minor Pentatonic, the 5 Patterns</a></li>
+        <li><a href="https://www.guitarriver.com/the-five-positions-of-the-minor-pentatonic-scale/" rel="noopener">Guitar River: The Five Positions of the Minor Pentatonic Scale</a></li>
+        <li><a href="https://jgmusiclessons.com/how-to-play-the-a-minor-pentatonic-scale-on-guitar-5-shapes" rel="noopener">JG Music Lessons: A Minor Pentatonic, 5 Essential Shapes</a></li>
+        <li><a href="https://onlineguitarbooks.com/a-minor-pentatonic-scale/" rel="noopener">Online Guitar Books: A Minor Pentatonic Scale</a></li>
+        <li><a href="https://musicgurus.com/blog/learning-the-minor-and-major-pentatonic-scale-on-guitar" rel="noopener">Music Gurus: Learning the Minor and Major Pentatonic Scale</a></li>
+        <li><a href="https://hub.yamaha.com/guitars/g-how-to/a-guitarists-guide-to-major-and-minor-pentatonic-scales" rel="noopener">Yamaha: A Guitarist's Guide to Major and Minor Pentatonic Scales</a></li>
+        <li><a href="https://www.ubisoft.com/en-au/game/rocksmith/plus/news-updates/232gaocCQ6PBkV8gfyLFsc/how-to-practice-the-pentatonic-scale-on-guitar" rel="noopener">Rocksmith: How to practice the pentatonic scale on guitar</a></li>
+        <li><a href="https://yousician.com/blog/4-pentatonic-scale-patterns-to-practice" rel="noopener">Yousician: Pentatonic Scale Patterns to Practice</a></li>
+        <li><a href="https://community.justinguitar.com/t/a-learning-practice-routine-to-blend-minor-major-pentatonic-scales/76173/2" rel="noopener">JustinGuitar community: a practice routine to blend minor and major pentatonic scales</a></li>
+      </ul>
+      <p class="muted">The guides show the fret positions as pictures, not text. These diagrams were worked out from the scale notes, then checked against what the guides do say in words: the lowest fret of each A minor position (frets 2, 5, 7, 9 and 12), A minor Box 1 on fret 5 and G minor Box 1 on fret 3, the root note C at fret 8 on the low E string, and major Box 1 matching minor Box 2. In A minor, Box 4 is shown at frets 0 to 3 (the open position), and it can also be played at frets 12 to 15. The note order in Exercise 1 is simply the box read from the thickest string to the thinnest, which follows from the diagram. The guides number the boxes slightly differently, so a video may call a box by another number.</p>
+    </details>
   </section>
 
   <section id="fretboard" aria-labelledby="fb-h">

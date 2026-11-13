@@ -382,4 +382,29 @@ const INTERVALS = [
   ["b5","Tritone","6"],["5","Perfect 5th","7"],["b6","Minor 6th","8"],["6","Major 6th","9"],["b7","Minor 7th","10"],["7","Major 7th","11"],
 ];
 
-if (typeof module !== "undefined") module.exports = { pcOf, spell, CHORD_TYPES, TYPE, ROOTS, chordVoicings, chordNotes, chordName, bassOptions, scaleNotes, SCALES, keyChords, TUNINGS, openFreq, STD_PC };
+// ---- Pentatonic boxes ----
+// The five minor pentatonic boxes in A, as frets on [low E, A, D, G, B, high e]. Every other key is these shapes slid along the neck.
+// Checked against the guides: lowest frets 5, 7, 9, 12, 2 (onlineguitarbooks), and A minor box 1 = G minor box 1 two frets up (Guitar River).
+const A_MINOR_BOXES = [
+  [[5,8],[5,7],[5,7],[5,7],[5,8],[5,8]],
+  [[8,10],[7,10],[7,10],[7,9],[8,10],[8,10]],
+  [[10,12],[10,12],[10,12],[9,12],[10,13],[10,12]],
+  [[12,15],[12,15],[12,14],[12,14],[13,15],[12,15]],
+  [[15,17],[15,17],[14,17],[14,17],[15,17],[15,17]],
+];
+const OPEN_PC = [4, 9, 2, 7, 11, 4];
+function pentaBoxes(rootName, kind) {
+  const rp = pcOf(rootName);
+  const minorRoot = kind === "major" ? (rp + 9) % 12 : rp;      // a major pentatonic has the same notes as the minor one that starts 3 semitones lower
+  const d = (minorRoot - 9 + 12) % 12;
+  const order = kind === "major" ? [1, 2, 3, 4, 0] : [0, 1, 2, 3, 4];  // major box 1 is the minor box whose second shape starts on the major root
+  return order.map((bi, n) => {
+    let strings = A_MINOR_BOXES[bi].map(p => p.map(x => x + d));
+    const lo0 = Math.min(...strings.flat()); if (lo0 >= 12) strings = strings.map(p => p.map(x => x - 12));
+    const all = strings.flat();
+    return { number: n + 1, strings, lo: Math.min(...all), hi: Math.max(...all),
+      rootFrets: strings.map((p, s) => p.filter(fr => (OPEN_PC[s] + fr) % 12 === rp)) };
+  });
+}
+
+if (typeof module !== "undefined") module.exports = { pcOf, spell, CHORD_TYPES, TYPE, ROOTS, chordVoicings, chordNotes, chordName, bassOptions, pentaBoxes, scaleNotes, SCALES, keyChords, TUNINGS, openFreq, STD_PC };

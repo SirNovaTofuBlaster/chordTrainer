@@ -14,6 +14,7 @@ Guitar chords, scales and practice tools, with a left-handed and right-handed sw
 - Daily exercises: a 20-minute routine with timers, a streak counter and ten beginner chord exercises
 - Strumming patterns: save your own patterns on the My chords page, make variations, and send them to the trainer
 - Songs with the chords written above the words
+- Pentatonic tab: five boxes in any key (minor or major), a note-by-note play-along, and practice tips with sources
 - Tuning reference tones
 - Four colour themes (light, blue, black, sand) plus one that matches your device
 
