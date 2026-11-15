@@ -539,3 +539,22 @@ svg.chord .fnum.cur { fill: var(--on-accent); }
 .find-row input, .mine-bar input[type="text"] { font: 500 1rem var(--body); padding: 8px 10px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); color: var(--ink); min-width: 0; width: min(260px, 100%); }
 .find-msg { font-size: .88rem; }
 @media (pointer: coarse) { .find-row input, .mine-bar input[type="text"] { min-height: 44px; font-size: 16px; } }
+
+/* mirror video */
+.vid-form { display: flex; flex-wrap: wrap; gap: 10px; align-items: end; margin-bottom: 8px; }
+.vid-form label { display: grid; gap: 4px; flex: 1 1 260px; font-size: .85rem; }
+.vid-form input { font: 500 1rem var(--body); padding: 9px 10px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); color: var(--ink); width: 100%; box-sizing: border-box; min-width: 0; }
+.vid-stage { margin: 14px 0; display: grid; gap: 10px; }
+.vid-frame { position: relative; width: 100%; max-width: 960px; aspect-ratio: 16 / 9; background: #000; border-radius: 12px; overflow: hidden; }
+.vid-media { position: absolute; inset: 0; }
+.vid-media.flip { transform: scaleX(-1); }
+.vid-media iframe, .vid-media video { width: 100%; height: 100%; border: 0; display: block; pointer-events: none; background: #000; }
+.vid-tap { position: absolute; inset: 0; width: 100%; height: 100%; background: transparent; border: 0; cursor: pointer; }
+.vid-tap:focus-visible { outline: 3px solid var(--accent); outline-offset: -3px; }
+.vid-bar { display: flex; gap: 12px; align-items: center; max-width: 960px; }
+.vid-bar input { flex: 1; min-width: 0; accent-color: var(--accent); }
+.vid-time { font: 500 .85rem var(--mono); color: var(--muted); white-space: nowrap; }
+.vid-btns { display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center; }
+.vid-opt { display: inline-flex; gap: 6px; align-items: center; font-size: .9rem; }
+.vid-note { font-size: .85rem; margin: 0; }
+@media (pointer: coarse) { .vid-form input { min-height: 44px; font-size: 16px; } .vid-bar input { min-height: 36px; } }

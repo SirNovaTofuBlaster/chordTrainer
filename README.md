@@ -15,6 +15,7 @@ Guitar chords, scales and practice tools, with a left-handed and right-handed sw
 - Strumming patterns: save your own patterns on the My chords page, make variations, and send them to the trainer
 - Songs with the chords written above the words
 - Type a chord name (G5, Am7, D6/9, C/G) in the Chords tab or My chords instead of using the dropdowns
+- Video tab: paste a YouTube (or .mp4) link and watch it mirrored, with slow speed and a repeat-a-section loop
 - Pentatonic tab: five boxes in any key (minor or major), a note-by-note play-along, and practice tips with sources
 - Tuning reference tones
 - Four colour themes (light, blue, black, sand) plus one that matches your device

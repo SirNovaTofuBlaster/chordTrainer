@@ -3,7 +3,7 @@
   <div class="wrap">
     <a class="brand" id="home-link" href="#chords" aria-label="chordTrainer home">chord<span>Trainer</span></a>
     <nav class="jump" aria-label="Sections">
-      <a href="#chords">Chords</a><a href="#mine">My chords</a><a href="#exercises">Exercises</a><a href="#drills">Drills</a><a href="#pentatonics">Pentatonics</a><a href="#fretboard">Fretboard</a><a href="#keys">Keys</a><a href="#practice">Trainer</a><a href="#strumming">Strumming</a><a href="#songs">Songs</a><a href="#reference">Tuning</a>
+      <a href="#chords">Chords</a><a href="#mine">My chords</a><a href="#exercises">Exercises</a><a href="#drills">Drills</a><a href="#pentatonics">Pentatonics</a><a href="#fretboard">Fretboard</a><a href="#keys">Keys</a><a href="#practice">Trainer</a><a href="#strumming">Strumming</a><a href="#songs">Songs</a><a href="#video">Video</a><a href="#reference">Tuning</a>
     </nav>
     <div class="hand" role="group" aria-label="Which hand do you play with">
       <button id="hand-left" type="button" data-hand="left">Left<span class="hh">-handed</span></button>
@@ -447,6 +447,48 @@
       <div class="tune-strings" id="tune-strings"></div>
       <p class="muted" id="tune-note"></p>
     </div>
+  </section>
+
+  <section id="video" aria-labelledby="vid-h">
+    <h2 id="vid-h">Mirror video</h2>
+    <p class="lede">Most lessons are filmed for right-handed players. Paste a video link here and the picture is flipped, so the chord shapes look the way they do on your guitar.</p>
+    <form class="panel vid-form" id="vid-form" novalidate>
+      <label for="vid-url">Video link
+        <input id="vid-url" type="text" inputmode="url" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Paste a YouTube link, or a link to a .mp4 file">
+      </label>
+      <button class="btn" type="submit">Load video</button>
+    </form>
+    <p class="muted find-msg" id="vid-msg" role="status" aria-live="polite">Works with YouTube links (including youtu.be and Shorts) and direct video file links ending in .mp4, .webm or .mov.</p>
+    <div class="vid-stage" id="vid-stage" hidden>
+      <div class="vid-frame" id="vid-frame"><div class="vid-media" id="vid-media"></div><button type="button" class="vid-tap" id="vid-tap" aria-label="Play or pause"></button></div>
+      <div class="vid-bar">
+        <input type="range" id="vid-seek" min="0" max="1000" value="0" aria-label="Position in video">
+        <span class="vid-time" id="vid-time" aria-live="off">0:00 / 0:00</span>
+      </div>
+      <div class="vid-btns">
+        <button class="btn" id="vid-play" type="button">Play</button>
+        <button class="btn small ghost" id="vid-back" type="button">Back 5s</button>
+        <button class="btn small ghost" id="vid-fwd" type="button">Forward 5s</button>
+        <label class="vid-opt">Speed <select id="vid-rate"><option value="0.25">0.25x</option><option value="0.5">0.5x</option><option value="0.75">0.75x</option><option value="1" selected>Normal</option></select></label>
+        <label class="vid-opt"><input type="checkbox" id="vid-mirror" checked> Mirror the picture</label>
+      </div>
+      <div class="vid-btns vid-loop">
+        <span class="muted">Repeat a bit:</span>
+        <button class="btn small ghost" id="vid-a" type="button">Set start</button>
+        <button class="btn small ghost" id="vid-b" type="button">Set end</button>
+        <button class="btn small ghost" id="vid-clear" type="button">Clear</button>
+        <span class="muted" id="vid-loop-txt"></span>
+      </div>
+      <p class="muted vid-note">Words and numbers in the video will look backwards while it is mirrored. Untick "Mirror the picture" to read them. The controls here are not mirrored.</p>
+    </div>
+    <details class="fold">
+      <summary><span class="sub-h">If a video won't play</span></summary>
+      <ul class="pt-steps plain">
+        <li>Some YouTube videos can't be played on other websites. The owner turns that off. You'll see a message here. Try another video.</li>
+        <li>The video is played by YouTube on this page. This site doesn't download or copy it.</li>
+        <li>Links from other video sites (such as Vimeo or Facebook) aren't supported yet.</li>
+      </ul>
+    </details>
   </section>
 
   <section id="reference" aria-labelledby="ref-h">

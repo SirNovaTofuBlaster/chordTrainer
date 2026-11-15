@@ -552,6 +552,25 @@ svg.chord .fnum.cur { fill: var(--on-accent); }
 .find-msg { font-size: .88rem; }
 @media (pointer: coarse) { .find-row input, .mine-bar input[type="text"] { min-height: 44px; font-size: 16px; } }
 
+/* mirror video */
+.vid-form { display: flex; flex-wrap: wrap; gap: 10px; align-items: end; margin-bottom: 8px; }
+.vid-form label { display: grid; gap: 4px; flex: 1 1 260px; font-size: .85rem; }
+.vid-form input { font: 500 1rem var(--body); padding: 9px 10px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); color: var(--ink); width: 100%; box-sizing: border-box; min-width: 0; }
+.vid-stage { margin: 14px 0; display: grid; gap: 10px; }
+.vid-frame { position: relative; width: 100%; max-width: 960px; aspect-ratio: 16 / 9; background: #000; border-radius: 12px; overflow: hidden; }
+.vid-media { position: absolute; inset: 0; }
+.vid-media.flip { transform: scaleX(-1); }
+.vid-media iframe, .vid-media video { width: 100%; height: 100%; border: 0; display: block; pointer-events: none; background: #000; }
+.vid-tap { position: absolute; inset: 0; width: 100%; height: 100%; background: transparent; border: 0; cursor: pointer; }
+.vid-tap:focus-visible { outline: 3px solid var(--accent); outline-offset: -3px; }
+.vid-bar { display: flex; gap: 12px; align-items: center; max-width: 960px; }
+.vid-bar input { flex: 1; min-width: 0; accent-color: var(--accent); }
+.vid-time { font: 500 .85rem var(--mono); color: var(--muted); white-space: nowrap; }
+.vid-btns { display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center; }
+.vid-opt { display: inline-flex; gap: 6px; align-items: center; font-size: .9rem; }
+.vid-note { font-size: .85rem; margin: 0; }
+@media (pointer: coarse) { .vid-form input { min-height: 44px; font-size: 16px; } .vid-bar input { min-height: 36px; } }
+
 body { margin: 0; }
 </style>
 </head>
@@ -561,7 +580,7 @@ body { margin: 0; }
   <div class="wrap">
     <a class="brand" id="home-link" href="#chords" aria-label="chordTrainer home">chord<span>Trainer</span></a>
     <nav class="jump" aria-label="Sections">
-      <a href="#chords">Chords</a><a href="#mine">My chords</a><a href="#exercises">Exercises</a><a href="#drills">Drills</a><a href="#pentatonics">Pentatonics</a><a href="#fretboard">Fretboard</a><a href="#keys">Keys</a><a href="#practice">Trainer</a><a href="#strumming">Strumming</a><a href="#songs">Songs</a><a href="#reference">Tuning</a>
+      <a href="#chords">Chords</a><a href="#mine">My chords</a><a href="#exercises">Exercises</a><a href="#drills">Drills</a><a href="#pentatonics">Pentatonics</a><a href="#fretboard">Fretboard</a><a href="#keys">Keys</a><a href="#practice">Trainer</a><a href="#strumming">Strumming</a><a href="#songs">Songs</a><a href="#video">Video</a><a href="#reference">Tuning</a>
     </nav>
     <div class="hand" role="group" aria-label="Which hand do you play with">
       <button id="hand-left" type="button" data-hand="left">Left<span class="hh">-handed</span></button>
@@ -1005,6 +1024,48 @@ body { margin: 0; }
       <div class="tune-strings" id="tune-strings"></div>
       <p class="muted" id="tune-note"></p>
     </div>
+  </section>
+
+  <section id="video" aria-labelledby="vid-h">
+    <h2 id="vid-h">Mirror video</h2>
+    <p class="lede">Most lessons are filmed for right-handed players. Paste a video link here and the picture is flipped, so the chord shapes look the way they do on your guitar.</p>
+    <form class="panel vid-form" id="vid-form" novalidate>
+      <label for="vid-url">Video link
+        <input id="vid-url" type="text" inputmode="url" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Paste a YouTube link, or a link to a .mp4 file">
+      </label>
+      <button class="btn" type="submit">Load video</button>
+    </form>
+    <p class="muted find-msg" id="vid-msg" role="status" aria-live="polite">Works with YouTube links (including youtu.be and Shorts) and direct video file links ending in .mp4, .webm or .mov.</p>
+    <div class="vid-stage" id="vid-stage" hidden>
+      <div class="vid-frame" id="vid-frame"><div class="vid-media" id="vid-media"></div><button type="button" class="vid-tap" id="vid-tap" aria-label="Play or pause"></button></div>
+      <div class="vid-bar">
+        <input type="range" id="vid-seek" min="0" max="1000" value="0" aria-label="Position in video">
+        <span class="vid-time" id="vid-time" aria-live="off">0:00 / 0:00</span>
+      </div>
+      <div class="vid-btns">
+        <button class="btn" id="vid-play" type="button">Play</button>
+        <button class="btn small ghost" id="vid-back" type="button">Back 5s</button>
+        <button class="btn small ghost" id="vid-fwd" type="button">Forward 5s</button>
+        <label class="vid-opt">Speed <select id="vid-rate"><option value="0.25">0.25x</option><option value="0.5">0.5x</option><option value="0.75">0.75x</option><option value="1" selected>Normal</option></select></label>
+        <label class="vid-opt"><input type="checkbox" id="vid-mirror" checked> Mirror the picture</label>
+      </div>
+      <div class="vid-btns vid-loop">
+        <span class="muted">Repeat a bit:</span>
+        <button class="btn small ghost" id="vid-a" type="button">Set start</button>
+        <button class="btn small ghost" id="vid-b" type="button">Set end</button>
+        <button class="btn small ghost" id="vid-clear" type="button">Clear</button>
+        <span class="muted" id="vid-loop-txt"></span>
+      </div>
+      <p class="muted vid-note">Words and numbers in the video will look backwards while it is mirrored. Untick "Mirror the picture" to read them. The controls here are not mirrored.</p>
+    </div>
+    <details class="fold">
+      <summary><span class="sub-h">If a video won't play</span></summary>
+      <ul class="pt-steps plain">
+        <li>Some YouTube videos can't be played on other websites. The owner turns that off. You'll see a message here. Try another video.</li>
+        <li>The video is played by YouTube on this page. This site doesn't download or copy it.</li>
+        <li>Links from other video sites (such as Vimeo or Facebook) aren't supported yet.</li>
+      </ul>
+    </details>
   </section>
 
   <section id="reference" aria-labelledby="ref-h">
@@ -2251,6 +2312,7 @@ function goTab(id, scroll = true) {
     if (on) { a.setAttribute("aria-current", "page"); a.scrollIntoView({ block: "nearest", inline: "center" }); } else a.removeAttribute("aria-current");
   });
   if (typeof stopSpider === "function") stopSpider();
+  if (typeof vidPause === "function" && id !== "video") vidPause();
   try { localStorage.setItem("ct-tab", id); } catch (e) {}
   if (location.hash !== "#" + id) history.replaceState(null, "", "#" + id);
   if (scroll) window.scrollTo(0, 0);
@@ -2515,6 +2577,108 @@ document.querySelectorAll("button[data-hand]").forEach(b => b.addEventListener("
 renderPlay();
 // stop when leaving the tab
 window.addEventListener("hashchange", ppStop);
+
+// ---- Mirror video ----
+// Plays a YouTube video (through YouTube's own embedded player) or a direct video file, flipped left-to-right.
+let vid = null; // { kind: "yt"|"file", ... }
+let vidA = null, vidB = null, vidPoll = null, ytReady = null;
+const fmtT = s => { s = Math.max(0, Math.floor(s || 0)); return Math.floor(s / 60) + ":" + String(s % 60).padStart(2, "0"); };
+function parseVideoUrl(text) {
+  const t = String(text).trim();
+  if (!t) return null;
+  if (/^[A-Za-z0-9_-]{11}$/.test(t)) return { kind: "yt", id: t, start: 0 };
+  let u; try { u = new URL(/^[a-z]+:\/\//i.test(t) ? t : "https://" + t); } catch (e) { return null; }
+  if (!/^https?:$/.test(u.protocol)) return null;
+  const host = u.hostname.replace(/^(www\.|m\.|music\.)/, "");
+  const secs = v => { if (!v) return 0; if (/^\d+$/.test(v)) return +v; const m = v.match(/^(?:(\d+)h)?(?:(\d+)m)?(?:(\d+)s)?$/); return m ? (+m[1] || 0) * 3600 + (+m[2] || 0) * 60 + (+m[3] || 0) : 0; };
+  let id = null;
+  if (host === "youtu.be") id = u.pathname.slice(1).split("/")[0];
+  else if (host === "youtube.com" || host === "youtube-nocookie.com") {
+    if (u.pathname === "/watch") id = u.searchParams.get("v");
+    else { const m = u.pathname.match(/^\/(?:shorts|embed|live|v)\/([^/?]+)/); if (m) id = m[1]; }
+  }
+  if (id && /^[A-Za-z0-9_-]{11}$/.test(id)) return { kind: "yt", id, start: secs(u.searchParams.get("t") || u.searchParams.get("start")) };
+  if (host.includes("youtu")) return null;
+  if (/\.(mp4|webm|mov|m4v|ogv)$/i.test(u.pathname)) return { kind: "file", url: u.href };
+  return null;
+}
+function vidMsg(t) { $("vid-msg").textContent = t; }
+function applyMirror() { $("vid-media").classList.toggle("flip", $("vid-mirror").checked); try { localStorage.setItem("ct-vmirror", $("vid-mirror").checked ? "1" : "0"); } catch (e) {} }
+function loadYT() {
+  if (ytReady) return ytReady;
+  ytReady = new Promise((res, rej) => {
+    if (window.YT && YT.Player) return res();
+    const prev = window.onYouTubeIframeAPIReady;
+    window.onYouTubeIframeAPIReady = () => { if (prev) prev(); res(); };
+    const s = document.createElement("script"); s.src = "https://www.youtube.com/iframe_api"; s.onerror = () => { ytReady = null; rej(new Error("load")); };
+    document.head.appendChild(s);
+    setTimeout(() => { if (!(window.YT && YT.Player)) { ytReady = null; rej(new Error("timeout")); } }, 12000);
+  });
+  return ytReady;
+}
+const vidApi = {
+  time: () => !vid ? 0 : vid.kind === "yt" ? (vid.p.getCurrentTime ? vid.p.getCurrentTime() : 0) : vid.el.currentTime,
+  dur: () => !vid ? 0 : vid.kind === "yt" ? (vid.p.getDuration ? vid.p.getDuration() : 0) : (vid.el.duration || 0),
+  playing: () => !vid ? false : vid.kind === "yt" ? (vid.p.getPlayerState && vid.p.getPlayerState() === 1) : !vid.el.paused,
+  play: () => { if (!vid) return; vid.kind === "yt" ? vid.p.playVideo() : vid.el.play(); },
+  pause: () => { if (!vid) return; vid.kind === "yt" ? vid.p.pauseVideo() : vid.el.pause(); },
+  seek: s => { if (!vid) return; s = Math.max(0, Math.min(s, vidApi.dur() || s)); vid.kind === "yt" ? vid.p.seekTo(s, true) : (vid.el.currentTime = s); },
+  rate: r => { if (!vid) return; vid.kind === "yt" ? vid.p.setPlaybackRate(r) : (vid.el.playbackRate = r); },
+};
+function vidPause() { try { if (vid && vidApi.playing()) vidApi.pause(); } catch (e) {} }
+function vidTick() {
+  if (!vid) return;
+  let t = 0, d = 0; try { t = vidApi.time(); d = vidApi.dur(); } catch (e) { return; }
+  if (!$("vid-seek").matches(":active")) $("vid-seek").value = d ? Math.round(t / d * 1000) : 0;
+  $("vid-time").textContent = fmtT(t) + " / " + fmtT(d);
+  $("vid-play").textContent = vidApi.playing() ? "Pause" : "Play";
+  if (vidA !== null && vidB !== null && vidB > vidA && t >= vidB) vidApi.seek(vidA);
+}
+function vidLoopText() { $("vid-loop-txt").textContent = vidA === null ? "" : vidB === null ? `Start ${fmtT(vidA)}. Now set the end.` : `Repeating ${fmtT(vidA)} to ${fmtT(vidB)}`; }
+function vidClearLoop() { vidA = vidB = null; vidLoopText(); }
+async function loadVideo(text) {
+  const r = parseVideoUrl(text);
+  if (!r) { vidMsg("That doesn't look like a YouTube link or a direct video file link. Try a link like https://www.youtube.com/watch?v=..."); return; }
+  vidPause(); vidClearLoop();
+  $("vid-stage").hidden = false; $("vid-rate").value = "1";
+  $("vid-media").innerHTML = "";
+  try { localStorage.setItem("ct-vurl", text.trim()); } catch (e) {}
+  if (r.kind === "file") {
+    const el = document.createElement("video"); el.src = r.url; el.playsInline = true; el.preload = "metadata"; el.setAttribute("playsinline", "");
+    el.addEventListener("error", () => vidMsg("This file couldn't be loaded. The site that hosts it may block other websites from playing it."));
+    el.addEventListener("loadedmetadata", () => vidMsg("Ready. Press Play."));
+    $("vid-media").appendChild(el); vid = { kind: "file", el }; vidMsg("Loading..."); applyMirror(); vidTick(); return;
+  }
+  vidMsg("Loading from YouTube...");
+  try { await loadYT(); } catch (e) { vidMsg("Couldn't reach YouTube. Check your connection or any ad blocker, then try again."); $("vid-stage").hidden = true; return; }
+  const holder = document.createElement("div"); $("vid-media").appendChild(holder);
+  vid = { kind: "yt", p: null };
+  vid.p = new YT.Player(holder, {
+    videoId: r.id, host: "https://www.youtube-nocookie.com",
+    playerVars: { controls: 0, disablekb: 1, fs: 0, rel: 0, modestbranding: 1, playsinline: 1, iv_load_policy: 3, start: r.start || 0, origin: location.origin },
+    events: {
+      onReady: () => { vidMsg("Ready. Press Play."); applyMirror(); },
+      onError: e => vidMsg([101, 150].includes(e.data) ? "The owner of this video doesn't allow it to be played on other websites. Try another video." : e.data === 100 ? "This video was not found or is private." : "YouTube couldn't play this video. Try another one."),
+    },
+  });
+  applyMirror();
+}
+$("vid-form").addEventListener("submit", e => { e.preventDefault(); loadVideo($("vid-url").value); });
+$("vid-mirror").addEventListener("change", applyMirror);
+$("vid-play").addEventListener("click", () => vidApi.playing() ? vidApi.pause() : vidApi.play());
+$("vid-tap").addEventListener("click", () => vidApi.playing() ? vidApi.pause() : vidApi.play());
+$("vid-back").addEventListener("click", () => vidApi.seek(vidApi.time() - 5));
+$("vid-fwd").addEventListener("click", () => vidApi.seek(vidApi.time() + 5));
+$("vid-rate").addEventListener("change", e => vidApi.rate(+e.target.value));
+$("vid-seek").addEventListener("input", e => vidApi.seek(vidApi.dur() * e.target.value / 1000));
+$("vid-a").addEventListener("click", () => { vidA = vidApi.time(); vidB = null; vidLoopText(); });
+$("vid-b").addEventListener("click", () => { if (vidA === null) { vidLoopText(); return; } const t = vidApi.time(); if (t > vidA + 0.5) { vidB = t; vidLoopText(); } else $("vid-loop-txt").textContent = "The end must be after the start."; });
+$("vid-clear").addEventListener("click", vidClearLoop);
+vidPoll = setInterval(() => { if (!$("video").hidden) vidTick(); }, 250);
+try {
+  const m = localStorage.getItem("ct-vmirror"); $("vid-mirror").checked = m === null ? hand === "left" : m === "1";
+  const u = localStorage.getItem("ct-vurl"); if (u) $("vid-url").value = u;
+} catch (e) {}
 
 </script>
 </body>

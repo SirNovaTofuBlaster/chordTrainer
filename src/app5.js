@@ -10,6 +10,7 @@ function goTab(id, scroll = true) {
     if (on) { a.setAttribute("aria-current", "page"); a.scrollIntoView({ block: "nearest", inline: "center" }); } else a.removeAttribute("aria-current");
   });
   if (typeof stopSpider === "function") stopSpider();
+  if (typeof vidPause === "function" && id !== "video") vidPause();
   try { localStorage.setItem("ct-tab", id); } catch (e) {}
   if (location.hash !== "#" + id) history.replaceState(null, "", "#" + id);
   if (scroll) window.scrollTo(0, 0);
