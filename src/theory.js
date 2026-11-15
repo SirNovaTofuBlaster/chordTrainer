@@ -407,4 +407,46 @@ function pentaBoxes(rootName, kind) {
   });
 }
 
-if (typeof module !== "undefined") module.exports = { pcOf, spell, CHORD_TYPES, TYPE, ROOTS, chordVoicings, chordNotes, chordName, bassOptions, pentaBoxes, scaleNotes, SCALES, keyChords, TUNINGS, openFreq, STD_PC };
+
+// ---- Typed chord names ("G5", "Am7", "D6/9", "C/G", "F#m7b5") ----
+const TYPE_ALIASES = { "min": "m", "-": "m", "minor": "m", "major": "", "maj": "", "power": "5", "pwr": "5", "dom7": "7", "dominant7": "7", "aug": "+", "o": "dim", "°": "dim", "ø": "m7b5", "min7": "m7", "-7": "m7", "min6": "m6", "min9": "m9", "min11": "m11", "min13": "m13", "ma7": "maj7", "mi7": "m7", "mi": "m", "69": "6/9", "m69": "m6/9", "sus": "sus4" };
+function parseNoteName(t) {
+  const m = String(t).trim().replace(/♯/g, "#").replace(/♭/g, "b").match(/^([A-Ga-g])([#b]{0,2})$/);
+  if (!m) return null;
+  const name = m[1].toUpperCase() + m[2], pc = pcOf(name);
+  return { name, pc, root: ROOTS.find(r => pcOf(r) === pc) };
+}
+function matchChordType(rem) {
+  const bySym = {}; CHORD_TYPES.forEach(t => { if (!(t.sym in bySym)) bySym[t.sym] = t.id; });
+  const tries = [rem];
+  if (rem.toLowerCase() in TYPE_ALIASES) tries.push(TYPE_ALIASES[rem.toLowerCase()]);
+  if (/^M(\d|aj|AJ)/.test(rem)) tries.push(rem.replace(/^M(aj|AJ)?/, "maj"));
+  const lead = rem.match(/^(minor|major|min|maj|mi|ma|m|M)(.*)$/i);
+  if (lead && lead[2]) {
+    const head = /^(minor|min|mi|m)$/.test(lead[1]) || (lead[1] === "m") ? "m" : "maj";
+    if (lead[1] !== "M") tries.push(head + lead[2]);
+  }
+  for (const t of tries) if (t in bySym) return bySym[t];
+  if (rem[0] !== "M") {
+    const ci = CHORD_TYPES.filter(t => t.sym.toLowerCase() === rem.toLowerCase());
+    if (ci.length === 1) return ci[0].id;
+  }
+  return null;
+}
+// Returns { root, type, bass } for text such as "G5" or "D6/9" or "C/G", or null if it cannot be read.
+function parseChordText(text) {
+  const raw = String(text).trim().replace(/\s+/g, "").replace(/♯/g, "#").replace(/♭/g, "b");
+  const m = raw.match(/^([A-Ga-g][#b]?)(.*)$/);
+  if (!m) return null;
+  const root = parseNoteName(m[1][0].toUpperCase() + m[1].slice(1));
+  if (!root) return null;
+  let rem = m[2], type = matchChordType(rem), bass = "";
+  if (type === null && rem.includes("/")) {
+    const i = rem.lastIndexOf("/"), b = parseNoteName(rem.slice(i + 1)), t = matchChordType(rem.slice(0, i));
+    if (b && t !== null) { type = t; bass = b.root; }
+  }
+  if (type === null) return null;
+  if (bass && pcOf(bass) === pcOf(root.root)) bass = "";
+  return { root: root.root, type, bass };
+}
+if (typeof module !== "undefined") module.exports = { parseChordText, pcOf, spell, CHORD_TYPES, TYPE, ROOTS, chordVoicings, chordNotes, chordName, bassOptions, pentaBoxes, scaleNotes, SCALES, keyChords, TUNINGS, openFreq, STD_PC };

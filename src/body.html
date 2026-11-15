@@ -42,6 +42,12 @@
       <span class="quick-label">Beginner chords</span>
       <div id="quick"></div>
     </div>
+    <div class="find-row">
+      <label for="cfind" class="inline">Or type a chord name
+        <input id="cfind" type="text" inputmode="text" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="G5, Am7, D6/9, C/G ...">
+      </label>
+      <span id="cfind-msg" class="muted find-msg" role="status" aria-live="polite"></span>
+    </div>
     <div class="pick">
       <div class="roots" id="roots" role="group" aria-label="Root note"></div>
       <label for="ctype" class="inline">Type
@@ -72,6 +78,9 @@
     <div class="panel mine-bar">
       <div class="pair add-row"><span class="pair-label">Add a chord</span>
         <select id="mine-root" aria-label="Note"></select><select id="mine-type" aria-label="Chord type"></select></div>
+      <div class="pair add-row"><span class="pair-label">Or type it</span>
+        <input id="mine-find" type="text" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="G5, Am7, D6/9, C/G ..." aria-label="Type a chord name"></div>
+      <span id="mine-find-msg" class="muted find-msg" role="status" aria-live="polite"></span>
       <button class="btn" id="mine-add" type="button">Add</button>
       <label for="mine-mode">Quiz mode<select id="mine-mode">
         <option value="all">Show everything</option>

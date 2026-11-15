@@ -220,7 +220,17 @@ function initMine() {
   $("mine-type").innerHTML = typeOptions(false);
   $("mine-quick").innerHTML = QUICK.map(([r, t]) => `<button type="button" class="chip" id="mq-${r}${t}" data-r="${r}" data-t="${t}">${chordName(r, t)}</button>`).join("");
   $("mine-quick").querySelectorAll("button").forEach(b => b.addEventListener("click", () => addMine(b.dataset.r, b.dataset.t)));
-  $("mine-add").addEventListener("click", () => addMine($("mine-root").value, $("mine-type").value));
+  $("mine-find").addEventListener("input", e => readTyped(e.target.value, $("mine-find-msg")));
+  $("mine-add").addEventListener("click", () => {
+    const txt = $("mine-find").value.trim();
+    if (txt) {
+      const r = readTyped(txt, $("mine-find-msg"));
+      if (!r) return;
+      const ok = addMine(r.root, r.type, r.bass);
+      $("mine-find-msg").textContent = ok ? `Added ${chordName(r.root, r.type, r.bass)}.` : `${chordName(r.root, r.type, r.bass)} is already in your list.`;
+      if (ok) $("mine-find").value = "";
+    } else addMine($("mine-root").value, $("mine-type").value);
+  });
   $("add-mine").addEventListener("click", () => { addMine(cRoot, cType, cBass); $("add-mine").textContent = "Added"; setTimeout(() => $("add-mine").textContent = "Add to my chords", 1200); });
   $("mine-mode").addEventListener("change", () => { revealed.clear(); renderMine(); });
   $("mine-shuffle").addEventListener("click", () => {

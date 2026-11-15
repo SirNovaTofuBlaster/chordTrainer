@@ -78,6 +78,20 @@ function initFinder() {
   $("quick").querySelectorAll("button").forEach(b => b.addEventListener("click", () => { cRoot = b.dataset.r; cType = b.dataset.t; cBass = ""; renderFinder(); }));
 }
 
+// ---- Type a chord name ----
+const FIND_HELP = "Try G5, Am7, D6/9, C/G or F#m7b5.";
+function readTyped(text, msgEl) {
+  if (!text.trim()) { msgEl.textContent = ""; return null; }
+  const r = parseChordText(text);
+  if (!r) { msgEl.textContent = "Not found yet. " + FIND_HELP; return null; }
+  msgEl.textContent = `${chordName(r.root, r.type, r.bass)}: ${TYPE[r.type].name}${r.bass ? " over " + r.bass : ""}`;
+  return r;
+}
+$("cfind").addEventListener("input", e => {
+  const r = readTyped(e.target.value, $("cfind-msg"));
+  if (r) { cRoot = r.root; cType = r.type; cBass = r.bass; renderFinder(); }
+});
+
 // ---- Fretboard ----
 function intervalLabel(semis) { return INTERVALS[semis][0]; }
 function renderFretboard() {

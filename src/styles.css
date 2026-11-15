@@ -533,3 +533,9 @@ svg.chord .dot.cur { fill: var(--accent); stroke: var(--ink); stroke-width: 3.5;
 svg.chord .fnum.cur { fill: var(--on-accent); }
 .pt-ex { list-style: decimal; }
 @media (max-width: 520px) { .pt-play-row { grid-template-columns: 1fr; justify-items: center; } .pt-play-info { width: 100%; } }
+
+/* typed chord names */
+.find-row { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: end; margin-bottom: 12px; }
+.find-row input, .mine-bar input[type="text"] { font: 500 1rem var(--body); padding: 8px 10px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); color: var(--ink); min-width: 0; width: min(260px, 100%); }
+.find-msg { font-size: .88rem; }
+@media (pointer: coarse) { .find-row input, .mine-bar input[type="text"] { min-height: 44px; font-size: 16px; } }
